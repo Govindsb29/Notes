@@ -1,0 +1,1291 @@
+0:02
+There is more seats on the side for people walking in late.
+0:11
+So just to make sure you are in CS231n
+0:18
+The deep learning on neural network class for visual recognition
+0:23
+Anybody in the wrong class? Okay, good. Alright, so welcome and happy new year, happy first day of the winter break
+0:37
+the second offering of this class when we have literally doubled our enrollment
+0:43
+and from a hundred eighty people last time we offered to about 350 of you
+0:50
+signed up just a couple of words to do to make us all legally covered we are
+0:57
+video recording this class so um you know if you're uncomfortable about this
+1:04
+for today just go behind the camera or go to a corner that the camera is not
+1:11
+gonna turn but we are going to send out forms for you to fill out in terms of
+1:18
+allowing a video recording so so that's that's just one bit of housekeeping so
+1:25
+um all right um my name is Faye Faye Lee I'm a professor at the computer science
+1:30
+department so this class I'm co-teaching with two senior graduate students and
+1:37
+one of them is here is Andre capaci and ray can you just say hi to everybody we have well I don't think Andre needs too much introduction a lot of you
+1:46
+probably know his work follow his blog his Twitter follower Andre has way more
+1:55
+followers than I do he's very popular and also Justin
+2:01
+Johnson who is still traveling internationally but will be back in a few days so Andre and Justin will be picking up the bulk of the lecture
+2:10
+teaching and today I'll be giving the first lecture but as you probably can see that I'm expecting a newborn ratio
+2:20
+speaking of weeks so you'll see more of Andra and Justin in lecture time we will
+2:28
+also introduce a whole team of TAS towards the end of this lecture again
+2:34
+people who are looking for seats if you go out of that door and come back there is a whole bunch of seats on this side okay so let's so this for this lecture
+2:45
+we're going to give an introduction of the class the kind of problems we work
+2:52
+on and the tools we'll be learning so again welcome to CS 231n this is a
+Vision
+3:02
+vision class it's based on a very specific modeling architecture called
+3:08
+neural network and even more specifically mostly on convolution on your network and a lot of you hear this term maybe through a popular press an
+3:20
+article we or coverage we tend to call this the deep learning network vision is
+3:29
+one of the fastest growing field of artificial intelligence in fact cisco
+3:38
+has estimated and and we are on day four of this by 2016 which we already have
+3:46
+arrived more than 85% of the internet cyberspace data is in the form of pixels
+3:55
+or what they call multimedia so so we basically have entered an age of vision
+4:05
+of images and videos and why why is it so well partially and to a large extent
+4:12
+is because of the explosion of both the internet as a carrier of data as well as
+4:20
+sensors we have more sensors than the number of people on earth these days
+4:26
+every one of you is carrying some kind of smartphones digital cameras and and
+4:31
+and and you know cars are running on the street with cameras so so the sensors
+4:37
+have really enabled the explosion of visual data in the on the internet but
+4:45
+visual data or pixel data is also the hardest data to harness so if you have
+4:53
+heard my previous talks and some other um talks by computer vision professors
+5:03
+we call this the dark matter of the internet why is this the dark matter
+5:09
+just like the universe is consisted of 85% dark matter dark energy is these
+5:16
+matters energy that is very hard to observe we can we can infer it by
+5:21
+mathematical models in the universe on the Internet these are the matters pixel data other the data that we don't know we have a
+5:30
+hard time grasping the contents here's one very very simple aspects for you to
+5:35
+consider so today YouTube servers every 60
+5:42
+seconds we have more than 150 hours of videos uploaded onto YouTube servers for
+5:52
+every 60 seconds think about the amount of data there's no way that human eyes
+6:01
+can sift through this massive amount of data and and make annotations labeling
+6:08
+it and and and and describe the contents so think from the perspective of the
+6:15
+YouTube team or Google company if they want to help us to search index manage
+6:23
+and of course for their purpose put advertisement or whatever manipulate the content of the data were at loss because nobody can hand annotate this the only
+6:35
+hope we can do this is through vision technology to be able to label the
+6:41
+objects find the things find the frames you know locate where that basketball
+6:47
+video were Kobe Bryant's making like that awesome shot and so so these are
+6:53
+the problems that we are facing today that the massive amount of data and the
+6:59
+the challenges of the dark matter so computer vision is a field that touches
+Computer Vision
+7:05
+upon many other fields of studies so I'm sure that even sitting here sitting here
+7:12
+many of you come from computer science but many of you come from biology psychology are specializing natural language processing or graphics
+7:23
+or robotics or you know medical imaging and so on so as a field computer vision
+7:29
+is really a truly interdisciplinary field what the problems we work on the
+7:36
+models we use touches on engineering physics biology psychology computer
+7:42
+science and mathematics so just a little bit of a more personal touch I am the
+7:49
+director of the computer vision lab at Stanford in our lab we I work with
+7:55
+graduate students and postdocs and and and even undergraduate students on a number of topics and most dear to our own research who some of them you know
+8:07
+that Andre just didn't come from my lab a number of TAS come from my lab we work
+8:14
+on machine learning which is part a percent of deep learning we work a lot
+8:22
+cognitive science and neuroscience as well as the intersection between NLP and
+8:28
+speech so that's that's the kind of landscape of computer vision research
+8:34
+that my lab works in so also to put things in a little more perspective what
+Computer Vision Classes
+8:42
+are the computer vision classes that we offer here at Stanford through the computer science department clearly you're in this class yes 21 n
+8:53
+and so you some of you who have never taken computer vision probably have
+9:01
+heard of comparison for the first time I probably should have already done CS 131
+9:08
+that's an intro class of previous quarter we offered and then and then
+9:15
+next quarter which normally is offer this quarter but this year is a little shifted there's an important graduate level computer vision class called CS
+9:25
+231 a offered by Professor Silvio subber si who works in robotics and 3d vision
+9:32
+and a lot of you asked us the question that are these you know do these replace
+9:43
+each other this class CS 231n vs. CS 231 a and the answer is no and if you're
+9:52
+interested in a broader coverage of tools and topics of computer vision as
+10:01
+well as some of the fundamental fundamental topics that comes that
+10:08
+relates you to 3d vision robotic vision and visual recognition you should
+10:13
+consider taking 231 a that is the more general class 231 n which will go into
+10:23
+starting today more deeply focuses on a specific angle of both problem and model
+10:30
+the model is your network and the angle is visual recognition mostly but of
+10:37
+course they have a little bit of overlap but that's the major difference and next
+10:44
+next quarter we also have possibly a couple of a couple of advanced
+10:51
+seven-hour level class but you that's still in the formation stage so you just
+10:57
+have to check the syllabus so that's the the kind of computer vision curriculum
+11:02
+we offer this you're at Stanford any questions so far
+11:08
+yes 131 is not a strict requirement for this class but you'll soon see that if
+11:20
+you've never heard of computer vision for the first time I suggest you find a way to catch up because this class assumes a basic level of understanding
+11:30
+of of of computer vision you can browse the notes and so on all right okay so
+Brief History of Computer Vision
+11:42
+the rest of today is that I will give a very brief broad stroke history of
+11:48
+computer vision and then we'll talk about 231n a little bit in terms of
+11:54
+the organization of the class actually really care about sharing with you this brief history of computer vision because you know you might be here primarily
+12:05
+because of your interesting this really interesting tool called deep learning and this is the purpose of this class we're offering you an in-depth look in
+12:15
+them and just journey through the the what this deep learning model is but
+12:21
+without understanding the problem domain without thinking deeply about what this
+12:27
+problem is it's very hard for you to to go on to be an inventor of the next
+12:37
+model that really solves a big problem in vision or to be you know developing
+12:42
+developing making impactful work in solving a heart problem and also in
+12:51
+general problem domain and model the modeling tools themselves are never
+12:57
+never fully decoupled they inform each other and you see through the history of
+13:03
+deep learning a little bit that the convolutional neural network
+13:08
+architecture come from the need to solve a vision problem and
+13:15
+then vision problem helps the the deep learning algorithm to evolve and back
+13:23
+and forth so it's really important to to you know I want you to finish this course and feel proud that your student of computer vision and of deep learning
+13:33
+so you have this boost tool set and the in-depth understanding of how to use the
+13:39
+tools that to to to to tackle important problems so it's a brief history but
+Brief History of Earth
+13:46
+doesn't mean it's a short history so we're gonna go all the way back to two hundred thirty five hundred forty million years ago so why why did I pick
+13:57
+this you know on the scale of the the earth history this is a fairly specific
+14:05
+range of years well so I don't know if you have heard of this but this is a
+14:11
+very very curious period of the Earth's history and biologists call this the Big
+14:18
+Bang of evolution before five hundred three four five hundred forty million
+14:26
+years ago the earth is a very peaceful pot of water I mean it's pretty big pot
+14:33
+of water so we have very simple organisms these are like animals that
+14:39
+just floats in the water and the way they eat and now on a daily basis is you
+14:49
+know they just float and if some kind of food comes by near their mouths or
+14:54
+whatever they just open the mouth and grab it and we don't have too many
+15:02
+different types of animals but something really strange happened around five
+15:09
+hundred forty million years suddenly from the fossils we study there's a huge
+15:15
+explosion of species the biologists call speciation like suddenly for some reason
+15:24
+something hit the earth that animals start to diversify
+15:29
+get really complex and they they start to yellow to to you start to have
+15:35
+predators and praise and then they have all kind of tools to to survive and what
+15:40
+was the triggering force of this was a huge question because people were saying
+15:46
+oh did you know another set of whatever a meteoroid hit the earth or or you know
+15:52
+the environment change it turned out one of the most convincing theory is that by
+15:59
+this guy called Andrew Parker of his a modern zoologist in Australia from
+16:05
+Australia he studied a lot of fossils and his theory is that it was the onset
+16:14
+of the ice so one one of the first trilobite developed and I a really
+16:23
+really simple I it's almost like a pinhole camera that just catches light
+16:28
+and make some projections and register some information from the environment
+16:34
+suddenly life is no longer so mellow because once you have the eye the first
+16:40
+thing you can do is you can go catch food you actually know where food is you're not just like blind and and floating the water and once you can go
+16:50
+catch food guess what the food better develop eyes and to run away from you
+16:56
+otherwise they'll be gone you know you're you're so the first element we had had eyes were like in a in a unlimited buffet it's like working at
+17:05
+Google and it just like it has the best time you know eating everything they can
+17:12
+but because of this onset of the eyes what we whether the geologists realized
+17:19
+is that the the biological arms race began every single animal needs to needs
+17:29
+to learn to develop things to survive or to you know you you you suddenly have
+17:34
+praise and predators and and all this and the speciation begin so that's when
+17:40
+vision become 540 million years and not only vision began vision
+17:46
+was one of the major driving force of the speciation or the the big ban of
+17:53
+evolution alright so so we're not going to follow evolution for with too much
+17:58
+detail another big important work that focus on in engineering of vision
+Camera Obscura
+18:07
+happened around the Renaissance and of course it's attributed to this amazing
+18:13
+guy Leonardo da Vinci so before Renaissance
+18:19
+you know throughout human civilization from Asia to Europe to India to Arabic
+18:25
+world we have seen models of cameras so Aristotle has proposed the camera
+18:31
+through the leaves Chinese philosopher Moses have proposed the camera through a
+18:37
+box with a hole but if you look at the first documentation of really a modern
+18:45
+looking camera it's called camera obscura obscura and that is documented by Leonardo da Vinci I'm not going to get into the details
+18:56
+but this is you know you get the idea that there is some kind of lens or at
+19:04
+least a hole to capture lights reflected from the real world and then there is
+19:11
+some kind of projection to capture the information of the of the of the real
+19:17
+world image so that's the beginning of the modern you know of engineering of
+19:27
+vision it started with wanting to copy the
+19:32
+world and wanting to make a copy of the visual world it hasn't got anywhere
+19:39
+close to wanting to engineer the understanding of the visual world right
+19:44
+now we're just talking about duplicating the visual world so that's one important
+19:50
+work to remember and of course after a camera obscura that we we start to see
+19:57
+a whole series of successful you know some film gets developed um you know
+20:04
+like kodak was one of the first companies developing commercial cameras
+20:10
+and then we start to have camcorders and all this another very important
+Vision in the Brain
+20:18
+important piece of work that i want you to be aware of as vision student is
+20:25
+actually not an engineering work but a sign science piece of science work that
+20:31
+starting to ask the question is how does vision work in our biological brain no
+20:37
+we we now know that it took 540 million years of evolution to get a really
+20:45
+fantastic visual system in mammals in humans but what did evolution do during
+20:53
+this time what kind of architecture did it develop from that simple trilobite
+20:59
+eye to today yours and mine well a very important piece of work happened at
+21:06
+harvard by 2:00 at that time young to very young ambitious postdoc Cuba and
+21:12
+visa what they did is that they used awake but Anna sized cats and then there
+21:22
+was enough technology to build this little needle called electrode to push
+21:28
+the electrode through into the the wall that the skull is open into the brain of
+21:34
+the cat into an area what we already know primary visual cortex primary
+21:42
+visual cortex is an area that neurons do a lot of things for for visual processing but before you go visa we don't really know what primary visual
+21:52
+cortex is doing we just know it's one of the earliest state other than your eyes
+21:57
+of course but earliest stage for visual processing and there's tons and tons of
+22:04
+neurons working on vision and we really ought to ought to know what this is
+22:10
+because that's the beginning of vision visual process in the brain so they they put this electrode into the primary visual
+22:20
+cortex and interestingly this is another interesting fact if I don't drop all my
+22:25
+stuff I'll show you primary visual cortex the first stage or
+22:31
+second dependent where he come from I'm being very very rough rough here first
+22:38
+state of your cortical visual processing stage is in a back of your brain not
+22:43
+near your eye okay it's very interesting because your olfactory cortical
+22:49
+processing is right behind your nose your auditory is right behind your a
+22:55
+year but your primary visual cortex is the farthest from your eye and another
+23:03
+very interesting fact in fact not only the primary there's a huge area working on vision almost 50% of your brain is involved in vision vision is the hardest
+23:16
+and most important sensory perceptual cognitive system in the brain you know
+23:21
+I'm not saying anything else does it it's not useful clearly but you know it
+23:27
+takes nature this long to develop this this sensory system and it takes later
+23:33
+this much real estate space to be used for this system why because it's so
+23:39
+important and it's so damn hard that's why we need to use this much place I'll
+23:46
+get back to human reason they were really ambitious they want to know what primary visual cortex is doing because this is the beginning of our knowledge
+23:56
+for deep learning your network ah so they were showing cats so they put the
+24:02
+cats in this room and they were recording your activities and when I say recording your activity they're tall they're basically trying to see you know
+24:11
+if I put the the neural electrode here like to the neurons to the neurons fire
+24:17
+when they see something so for example if they show ah if they show cat
+24:23
+their ideas if I show this kind of fish you know apparently at that time cats
+24:29
+eat fish rather than these beings um with the cats new are like yellow you're
+24:35
+happy and start sending spikes and and the funny thing here is a story of
+24:42
+scientific discovery a scientific discovery takes both luck and care and
+24:48
+thoughtfulness they were shown as catfish whatever Mouse flower it just
+24:55
+doesn't work the catch neuron in the primary visual cortex was silent there
+25:01
+was no spiking are very little spiking and they were really frustrated but the
+25:08
+good news is that there was no computer at that time so what they have to do when they show this cats these stimuli is they have to use a slight projector
+25:19
+so they put a put a slide of a fish and then wait till the neuron spike if the
+25:25
+neuron doesn't spike they take the slide out and put in another slide and then they notice every time they change slide like this dislike you know the squarish
+25:36
+film I don't even remember if they use glass or film but whatever the neural
+25:42
+spikes that's weird you know like the actual mouse and fish and flower didn't
+25:49
+drive then you're excite the neuron but the the movement of taking a slide out
+25:56
+or putting a sliding dip excite the nor I can be the cat is thinking or finally
+26:02
+they're changing the new you know a new object for me so it turned out there's
+26:08
+an edge that's created by this slide that they're changing right the slide
+26:15
+whatever it's a square rectangular plate and that moving edge drove or excited
+26:24
+the neurons so they're really chased after that observation you know if they
+26:30
+were too frustrated or too careless they would have missed that but they were not
+26:35
+they really they chase after that and realize neurons in the
+26:41
+primary visual cortex are organized in columns and for every column of the
+26:48
+neurons they like to see a specific orientation of the of the of a stimuli
+26:57
+simple oriented bars rather than the fish or Mouse you know I'm making this a
+27:04
+little bit of a simple story because there are still numerous in primary visual cortex we don't know what they like they don't like simple oriented
+27:11
+bars but by large we human visual found that the beginning of visual processing
+27:18
+is not a holistic fish or Mouse the beginning of visual processing is simple
+27:25
+structures of the world edges oriented edges and this is a very deep deep
+27:35
+implication to both neurophysiology and neuroscience as well as engineering
+27:41
+modeling it's if later when we visualize our deep neural network features will
+27:48
+see that simple simple of edge like structure emerging from our from our
+27:55
+model and even though the discovery was in a later 50s and early 60s they won a
+28:03
+Nobel a medical price for this work in 1981 so that was another very important
+28:12
+piece of work related to vision and visual processing and so when did
+Larry Roberts
+28:20
+computer vision begin that's another interesting um that's another interesting story his history the precursor of computer vision as a modern
+28:34
+field was this particular dissertation by Larry Roberts in 1963 it's called
+28:41
+block world he just as Hubel and Visa were discovering that the visual world
+28:49
+in our brain is organized by simple edge like structures Larry
+28:55
+Roberts as an early piece Commerce science PhD students were trying to
+29:02
+extract these edge like structures in images and and and and as a as a piece
+29:10
+of engineering work and in this particular case his goal is that you
+29:16
+know bow you and I as humans can recognize blocks no matter how it's
+29:22
+turned right like we know it's the same block these two are the same block even
+29:27
+though the lighting changed and the orientation changed and his conjuncture
+29:33
+is that just like people told us it's the edges that define is the structure
+29:41
+the edges the edges define the shape and they don't change rather than all these
+29:47
+interior things so Larry Roberts wrote a PhD dissertation to just extract these
+29:54
+edges it's you know if you work as a PhD student computer vision this is like you
+30:01
+know this is like undergraduate computer vision we don't have being a PhD thesis but that was the first precursor computer vision PhD thesis on Larry
+30:11
+Roberts is interesting he kind of gave up he's he's a working computer vision
+30:17
+afterwards and and went to DARPA and was one of the inventors of the Internet so
+30:24
+you know he didn't do too badly by giving up computer vision but we always
+30:30
+like to say that the birthday of computer vision as a modern field is in
+The Birthday of Computer Vision
+30:37
+the summer of 1966 the summer of 1966 MIT artificial intelligence lab was
+30:46
+established before that actually for one piece of history you should feel proud as a Stanford student this there are two pioneering artificial intelligence lab
+30:59
+established in the world in the early 1960s one by Marvin Minsky
+31:05
+at MIT one by John McCarthy at Stanford at Stanford the compel the artificial
+31:12
+intelligence lab was established before the computer science department and professor John McCarthy who founded AI lab is the one who is responsible for
+31:22
+the term artificial intelligence so that's a little bit of a proud stanford history but anyway we have to give MIT this credit for starting the field of
+31:31
+computer vision because in the summer of 1966 a professor at MIT AI lab decided
+31:40
+it's time to solve vision you know so AI was established we start to understand
+31:46
+you know first of all the logic and all this and I think Lisp was probably
+31:52
+invented at that time but anyway vision is so easy you open your eyes you see
+31:58
+the world how hard can this be let's solve it in one summer so especially MIT students are smart right so the summer vision project is an
+32:10
+attempt to use our summer workers effectively in a construction of a significant part of a visual system this was the proposal for that summer and
+32:21
+maybe they didn't use their summer work effectively but in any case Kumbi
+32:27
+computer vision was not solved in that summer since then they become the
+32:32
+fastest growing field of comparison and AI if you go to today's premium computer
+32:38
+vision conferences CS call cvpr or icc v we have like 2,000 to 2,500 researchers
+32:49
+worldwide attending this conference and a very practical note for for students
+32:57
+if you are a good computer vision slash machine learning students you will not
+33:02
+worry about jobs in Silicon Valley or anywhere else so so it's it's actually
+33:07
+one of the most exciting field but that was the birthday of computer vision
+33:14
+which means this year is the 50th versary of computer vision that's a very
+33:20
+exciting year in computer vision I we have come a long long way
+33:27
+okay so continue on the history of computer vision this is a person to
+David Marr
+33:32
+remember David Marr he he was also at MIT at that time working with a number
+33:39
+of a very influential computer vision scientist Shimon Ullman Thomas Tommy
+33:46
+Poggio and David Marr himself died early in 70s and he wrote a very influential
+33:55
+book called vision it's a very thin book and David Marsh
+34:01
+thinking about vision he took a lot of insights from neuroscience we already
+34:08
+said that Hubel and Wiesel give us the concept of simple structure vision
+34:14
+starts with simple structure it didn't start with a holistic fish or holistic
+34:20
+Mouse David Marr give us the next important insight and these two insight
+34:27
+together is the beginning of deep learning architecture is that vision is
+Vision is hierarchical
+34:33
+hierarchical you know so human and Visa said okay we start simple but human visa
+34:40
+didn't say we're any simple this visual world is extremely complex in fact I
+34:45
+take a picture a regular picture today with my iPhone there is I don't know my
+34:51
+iPhone's resolution let's suppose it's like 10 mega megapixels the potential
+34:59
+combination of pixels to form a picture in that is bigger than the total number
+35:05
+of atoms in the universe that's how complex vision can be is it's it's
+35:11
+really really complex so human visit oldest are simple David Marr told us
+35:18
+build a hierarchical model of course David mark didn't tell us to build it in
+35:25
+a convolution on your network which we will cover for the rest of the quarter but his idea is is this to represent or to think about
+35:34
+an image we think about it in several layers the first one he thinks we should
+35:40
+think about the edge image which is clearly an inspiration it took the inspiration from human visa and he personally call this the primal
+35:51
+sketch it's you know the name is self-explanatory and then you think
+35:58
+about two and half D this is where you start to reconcile your 2d image with a
+36:06
+3d world you recognize there is layers right on you know I look at you right
+36:12
+now I don't think half of you only has a head and a neck even though even though that's all I see but there is I know
+36:20
+you're included by the row in front of you and this is the fundamental
+36:25
+challenge of vision we have an ill-posed problem to solve nature had a ill-posed
+36:30
+problem to solve because the world is 3d but the imagery on our retina is 2d
+36:38
+Nature solved it by first a hardware trick which is to ice it did I use one
+36:45
+eye but then there's going to be a whole bunch of software trick to merge the information of the two eyes and all this so the same thing with computer vision
+36:53
+we have to solve that two and half the problem and then eventually we have to
+36:59
+put everything together so that we actually have a good 3d model of the world why do we have to have a 3d model of the world because we have to survive
+37:08
+navigate manipulate the world when I shake your hand I really need to know
+37:15
+how to you know extend out my hand and grab your hand in the right way that is a 3d modeling of the world otherwise I won't be able to grab your hand in the
+37:25
+right way when I pick up a mug the same thing so so that's a that's a that's
+37:32
+David Marsh architecture for visual it's a very high-level abstract architecture
+37:39
+it doesn't really inform us exactly what of mathematical modeling we should use
+37:45
+it doesn't inform us of the learning procedure and it really doesn't inform
+37:51
+as of the the inference procedure which we were getting to through the deep learning network architecture but that's the that's the high-level view and it's
+38:01
+an important it's an important concept to learn in in vision and we call this
+38:08
+the representation um a couple of really important work and this is a little bit
+38:15
+Stanford centric to just show you as soon as David Marr are laid out this
+38:21
+important way of thinking about vision the first wave of visual recognition
+38:28
+algorithms went after that 3d model because that's the goal right like no
+38:34
+matter how you represent the the stages the goal here here is to reconstruct a
+38:40
+3d model so that we can recognize object and this is really sensible because
+38:45
+that's what we go to the world and do so both of these two influential work comes
+38:52
+from Palo Alto one is from Stanford one is from SR I so uh Tom Binford was a
+38:58
+professor at Stanford AI lab and he had his student Rodney Brooks proposed one
+39:04
+one of the first so-called generalized cylinder model I'm not going to get into the details but the idea is that the world is composed of simple shapes like
+39:16
+cylinders blocks and then any real-world object is just a combination of these
+39:23
+simple shapes given a particular viewing angle and that was a very influential
+39:30
+visual recognition model in the 70s and Romney Brook went on to become a
+39:37
+director of MIT's AI lab and he was also a founding member of the irobot
+39:45
+company and Roomba and all this so he continued very influential of AI work another interesting model coming from
+39:55
+local uh Stanford Research Institute I think SR I is a across the street from
+40:02
+El Camino is this pictorial structure model is very similar it focused it has
+40:11
+less of a 3d flavor but more of a probabilistic flavor is that the objects
+40:18
+are made of still simple parts like a person's head is made of eyes and nose
+40:25
+and mouth and the parts were connected by Springs allowing for some deformation
+40:32
+so this is getting a sense of okay we recognize the world not every one of you have exactly the same eyes in the distance between the eyes we allow for
+40:41
+some kind of variability so this concept of variability start to get introduced
+40:48
+in a model like this and using models like this you know the the reason I want
+40:54
+to show you this is to see how simple that the work was in 80s this is one of
+41:01
+the most influential model in the 80s are recognizing real world object and the
+41:08
+entire paper of real world object is these shaving razors and but using the
+41:15
+edges and and simple shapes formed by the edges to to recognize this by by
+41:23
+develop another another Stanford Graduate so that's that's a that's kind
+41:30
+of the ancient world of computer vision we have been seen black and white or
+41:36
+even synthetic images starting the 90s we finally start to move into like
+Perceptual grouping
+41:43
+colorful images of real world it was a big change again a very very influential
+41:51
+work here it's not particularly about recognizing an object is about how only like carve out an image into
+42:01
+sensible parts right so if you enter this room there's no way your visual
+42:09
+system is telling you oh my god I see so many pixels right you immediately have
+42:14
+group things you see heads heads heads chair chair chair a stage platform piece
+42:22
+of furniture and all this this is called perceptual grouping perceptual grouping
+42:27
+is one of the most important problem in vision biological or artificial if we
+42:34
+don't know how to how to solve the perceptual grouping problem we're going to have a really hard time to deeply understand the visual world and and you
+42:45
+will learn towards the end of this this class this course a problem is
+42:51
+fundamental as this it's still not solved in computer vision even though we have made a lot of progress before deep learning and after deep learning we're
+43:00
+still grasping the final solution of a problem like this so so this is again
+43:06
+why I want to give you this introduction to for you to be aware of the deep
+43:12
+problems in vision and also the the current state in the the challenges in
+43:19
+vision we did not solve all the problem in vision despite whatever the news says you know like we're far from developing terminators who can do everything yet so
+43:31
+this piece of work is called normalized cut is one of the first computer vision
+43:38
+work that takes real-world images and tries to solve a very fundamental
+43:44
+difficult problem and titania Malick is a senior computer vision researcher
+43:51
+now professor at Berkeley also Stanford Graduate and you can see the results are
+43:57
+not that great um are we going to cover any segmentation in this class for me
+44:02
+when we might right you see we are making progress but this is the
+44:07
+beginning of that another very influential work that I want to
+Village owns face detector
+44:13
+I want to bring out and pay tribute so for even though these work were not
+44:20
+covering them in the rest of the course but I think it as a vision student it's really important for you to be aware of this because not only introduces the
+44:29
+important problem we want to solve it also gives you a perspective on the development of the field this work is called village owns face detector and
+44:40
+it's very dear to my heart because as a graduate student fresh graduate student
+44:45
+at Cal Tech it's the full of the first papers I read as a graduate student when
+44:51
+I enter the lab and I didn't know anything that my advisor said read this amazing piece of work that you know we're all trying to understand and then
+45:01
+P by the time I graduated from Cal Tech this very work is transferred to the
+45:08
+first smart digital camera by Fujifilm in 2006 as the first digital camera that
+45:16
+has a face detector so from a transfer point point a technology transfer point
+45:21
+of view it was extremely fast and it was one of the first successful high-level
+45:27
+visual recognition algorithm that's being used by consumer product so this
+45:34
+work just learns to detect faces and faces in a wild it's no longer you know
+45:40
+simulation data or very contrived data these are any pictures and and again
+45:46
+even though it didn't use a deep Learning Network it has a lot of the
+45:52
+deep learning flavor the features were learned you know the algorithm learns to
+45:58
+find features simple features like these black and white filter features that can
+46:05
+give us the best localization of faces so this is a very influential piece of
+46:12
+work it's also one of the first computer vision work that is deployed on a a
+46:22
+computer and can run real time before that compare vision algorithms were very slow the paper actually is called real-time face
+46:32
+detection it was granted Pentium 2 chips I don't know if anybody
+46:37
+remember that kind of chip but it was on a slow chip but nevertheless it run real
+46:42
+time so that was another very important bit of work and also one more thing to
+46:49
+point out around this time this is not the only work but this is a really good
+46:55
+representation around this time computer the focus of computer vision is shifting
+47:02
+remember that David Marr and the early Stanford work was trying to model the 3d
+47:11
+shape of the object now we're shifting to recognizing what the object is we
+47:20
+lost a little bit about can we really reconstruct these faces or not there is
+47:26
+a whole branch of computer vision graphics that continue to work on that but a big part of computer vision is not at this time around the turn of the
+47:36
+century is focusing on recognition that's bringing computer vision back to
+47:42
+AI and today the most important part of the computer vision work is focused on
+47:51
+these cognitive questions like recognition and AI questions um another
+Feature recognition
+47:58
+very important piece of work is starting to focus on features so around the time
+48:06
+of face recognition people start to realize it's really really hard to
+48:13
+recognize an object by describing the whole thing like I just said you know I
+48:19
+see you guys heavily included I don't see the rest of
+48:24
+your torso I really don't see any of your legs other than the first row but I
+48:29
+recognize you and I can infer you as an object so so people start to realize gee
+48:38
+it's not necessarily that global shape that we have to go after in order to recognize an object maybe it's the features if we recognize the important
+48:48
+features on an object we can go a long way and it makes a lot of sense think
+48:53
+about evolution right if you're out hunting you don't need to recognize that Tigers full body and shape to decide you need to run away you know just a few
+49:03
+patches of the fur of the tiger through the leaves probably can alarm you enough
+49:09
+so so we need to vision as quick decision-making based on vision is
+49:15
+really quick a lot of this happens on important features so this work cost
+49:21
+sift by devil Oh again you saw that name again is about learning important
+49:27
+important features on an object and once you learn these important features just
+49:33
+a few of them on an object you can actually recognize this object in a totally different angle on a totally cluttered scene so up to deep learnings
+49:45
+resurrection in that 2010 or 2012 for about 10 years the entire field of
+49:54
+computer vision was focusing on using these features to build models to
+50:00
+recognize objects and things and we've done a great job we've gone a long way
+50:05
+one of the reasons deep learning network uh was became more more convincing to a
+50:12
+lot of people is we will see that the features that a deep learning network
+50:17
+learns is very similar to these engineered features by brilliant
+50:23
+engineers so it's kind of confirmed even though you know in needed we need a
+50:29
+develope to first tell us this features work and then we start to develop better mathematical models to learn these features by itself but they confirmed
+50:38
+each other so so the historical you know importance of this work should not be
+50:46
+diminished they this work is the intellectual foundation for us one of the intellectual foundation for us
+50:53
+to realize that how critical or how useful these deep learning features are
+50:59
+when we learn them uh I'm going to skip this work and just briefly say because
+Machine learning tools
+51:07
+of the features that they will owe and meaning other researchers taught us we can use that to to learn that Scene Recognition and around that time the
+51:17
+machine learning tools we use mostly is either graphical models or support
+51:23
+vector machine and this is one influential work on using support vector machine and kernel models to recognize the sink but I'll I'll be brief here and
+Deformable part model
+51:36
+then one almost one last model before deep learning model is this feature or
+51:46
+feature based model called deformable part model is where we learn parts of an
+51:52
+object like parts of a person and we learn how to configure each other well
+51:58
+they come they configure in space and use a support vector machine kind of
+52:06
+model to recognize objects like humans and bottles around this time that's 2009
+52:16
+2010 the field of computer vision is matured enough that we're working on
+52:21
+these important and hard problem like recognizing pedestrians and recognizing
+52:26
+cars they're no longer contrived problem something else was needed its benchmarking because as a field advanced enough if we don't have good benchmark
+52:38
+then everybody's just published in papers on a few set of images and it's really hard to really set global standard so one of the most important
+Pascal Visual Object Recognition
+52:48
+benchmark is called Pascal vo C object recognition benchmark it's by a European
+52:55
+it's a European effort that researchers put together at tens of thousands of
+53:01
+images from 20 classes of objects and these are one example per per object like Cat Scouts cows maybe no cats dogs cows
+53:15
+airplanes bottles you know horses trains and all this and then we used and then
+53:24
+annually our computer vision researchers and labs come to compete on the object
+53:30
+recognition task for a Pascal object recognition challenge and in over the
+53:37
+past you know like through the years the the performance just keeps increasing
+53:43
+and that was when we start to feel excited about the progress of the field
+53:50
+at that time here's a little bit of more a closer story close to us is that my
+53:59
+lab and my students were thinking you know the real world is not about twenty objects the with real world is a little more than twenty objects so following
+54:09
+the work of Pascal visual object recognition challenge we put together
+54:15
+this massive massive project or imagenet some of you might have heard of image
+54:21
+net in this class you will be using a tiny portion of image that in some of
+54:27
+your assignments that image that is a data set of 50 million images all
+54:34
+clinged by hands and annotated over 20,000 object classes door it's not
+54:43
+graduate student who cleaned it it's that that would be very scary it's
+54:49
+Amazon Mechanical Turk platform the crowdsourcing platform and having said
+54:54
+that graduate student also suffered for from you know putting together this this
+54:59
+platform but it's a very exciting data set and we started we started to put
+55:07
+together competitions annually called image that competition for object
+55:14
+recognition and for example a standard competition of image classification by
+55:21
+image that is a thousand object classes over almost 1.5 million images and
+55:26
+algorithms compete on the performance so actually I just heard somebody was on
+55:33
+the social media was referring image that challenge as the Olympics of computer vision I was very flattering but um but here is something that here's
+55:44
+bringing as close to the history making of deep learning so in in a so the image
+Historical Context
+55:53
+step challenge started in 2010 that's actually around the time Pascal you know
+55:59
+we're colleagues they told us they're going to start to phase out their challenge of twenty objects so we faced in the thousand object image the
+56:08
+challenge and y-axis is error rate and we start to we started with very
+56:15
+significant error and of course you know every year the error decreased but
+56:23
+there's a particular year that error really decreased it was cutting half or
+56:29
+almost is 2012 2012 is the year that the winning architecture of image that
+56:40
+challenge was a convolutional neural network model and we'll talk about it
+56:46
+convolutional neural network was not invented in 2012 despite how all the
+56:52
+news make it sound like it's the newest thing around the block it's not it was invented back in the 70s or 80s but having a convergence of things we'll
+57:03
+talk about convolutional neural network showed its massive power as a high
+57:08
+capacity end to end training architecture and won the image they're
+57:14
+challenged by a huge margin and that was you know a quite a historical moment
+57:20
+from a math mathematical point of view nothing it wasn't that new but from an engineering and an solving real-world point of view this was a historical
+57:31
+moment that that piece of work was covered by you know New York Times and all this this is the onset this is the beginning of the deep learning
+57:42
+revolution if you call it and this is the premise of this class so
+Overview
+57:48
+at this point I'm gonna switch so we went through a bit of brief history of
+57:53
+computer vision for 540 million years and now I'm going to switch to the
+58:01
+overview of this class is there any other questions ok all right so um we've
+58:09
+talked about even though it was kind of overwhelming we talked a lot about many
+58:14
+different tasks in computer vision CS 231 n is going to focus on the visual
+58:21
+recognition problem also by enlarge especially through most of the
+58:27
+foundation lecture we're going to talk about the image classification problem but now you know everything we talked about is going to be based on that image
+58:36
+that classification setup we will we were getting to other visual recognition
+58:42
+scenarios but the image classification problem is the main problem we will
+58:48
+focus on in this class which means please keep in mind visual recognition is not just the image classification right there was 3d modeling there was
+58:57
+perceptual grouping and segmentation and all this but that's that's what we'll focus on and I don't need to convince you that just even application wise
+Applications
+59:07
+image classification is extremely useful problem in
+59:12
+you know big big commercial internet companies a point of view to start up
+59:18
+ideas you know you want to recognize objects you want to recognize food you want to do online shop mobile shopping you want to sort your albums so image
+59:29
+classification is is is can be a bread and butter a task for many many
+59:35
+important problems um there is a lot of problem that's related to image
+Image Classification
+59:43
+classification and today I don't expect you to understand the differences but I want you to hear that throughout this class we'll make sure you learn to
+59:54
+understand the neurons in the the details of different flavours of visual
+59:59
+recognition what is image classification what's object detection what's image captioning and these have different flavors for example you know
+1:00:11
+while image classification my focus on the whole big image object detection by
+1:00:17
+tell you where things exactly are like where the car is the pedestrian or the
+1:00:23
+hammer and and where the the relationship between objects and so on
+1:00:30
+so there are nuances and and details that you will be learning about in this
+1:00:35
+class and I already said CNN or convolutional neural network is one type
+1:00:43
+of deep learning architecture but it's the overwhelmingly successful deep
+1:00:49
+learning architecture and this is the architecture we will be focusing on and to just go back to the image that challenge ah so I said the historical
+1:01:00
+year is 2012 this is the year that Alex Khrushchev ski and his advisor geoff
+1:01:07
+hinton proposed this this convolutional neural network I think it's a seven
+1:01:14
+layer convolutional neural network to win the image that challenge model
+1:01:19
+before this year it was a shift feature plus
+1:01:26
+a support vector machine architecture it's still hierarchical but it doesn't
+1:01:32
+have that flavor of end to end learning and fast forward to 2015 the winning
+1:01:39
+architecture is still a convolutional neural network it's a hundred fifty one
+1:01:45
+layers by by Microsoft Asia research researchers and it's covering the
+1:01:57
+residual net right is that could the residual net so I'm not so sure if we're
+1:02:02
+going to cover that definitely don't expect to know every single layer what they do actually they repeat so it's not that hard but but but every year since
+1:02:14
+2012 the winning architecture of image net challenge is a deep learning based
+1:02:20
+architecture so like I said I also want you to respect history um
+1:02:27
+CNN is not invented overnight there is a lot of influential players today but you
+1:02:36
+know there are a lot of people who build the foundation I actually I don't have the slides one important name to remember is kunihiko fukushima kunihiko
+1:02:44
+fukushima it was a Japanese computer scientist who build a model Konya
+1:02:52
+cognitum and that was the beginning of the the neural network architecture and
+1:03:00
+yellow kun is also a very influential person and he's really his the the
+1:03:06
+groundbreaking work in my opinion of young ku was published in the 1990s so
+1:03:11
+that's when mathematicians and which geoff hinton Yellen Cruz PhD advisor was
+1:03:18
+involved worked out the back propagation learning strategy which if this work
+1:03:25
+didn't mean anything Andrei will tell you in a couple of weeks so but but the the mathematical model was worked out in the 80s and the
+1:03:34
+90s and this was a yellow Coon was working for Bell laughs at AT&T which is a amazing place at that time there's no Bell Labs today
+1:03:45
+anymore that they were working on really ambitious projects and he needed to recognize digits because eventually that
+1:03:52
+product was shipped to banks in the u.s. post office to recognize zip codes and
+1:03:58
+checks and he constructed this convolutional neural network and this is
+1:04:05
+where he he's inspired by Hubel and Wiesel he starts by looking as simple
+1:04:10
+edge like structures of an image it's not like the whole letter a it's really
+1:04:16
+nice just edges and then layer by layer he he you know he filters these edges
+1:04:22
+pull them together filters pool and then the build this architecture 2012 when
+1:04:29
+Alex Khrushchev ski and geoff hinton used almost exactly the same
+1:04:36
+architecture to participate in a in the in the image net challenge almost there's
+1:04:44
+very few changes but that become the winning architecture of this so what I
+1:04:51
+will tell you more about the detail changes there is the capacity that the
+1:04:56
+model did grow a little bit because Moore's Law helped us there's also a
+1:05:02
+very a very detailed function that changed a little bit of a shape from a
+1:05:08
+sigmoid row to a more rectified linear shape but whatever there's a couple of
+1:05:14
+small changes but really by enlarge nothing had changed mathematically but
+1:05:21
+two important things did change and that Grove the deep learning architecture
+1:05:26
+back into into its Renaissance one is like I said Moore's law and hardware
+1:05:36
+hardware made a huge difference because these are high extremely high capacity
+1:05:41
+models when Gallagher was doing this it's just painfully slow because of the
+1:05:47
+the bottleneck of computation he couldn't build this model too big at once you cannot build it too big it cannot fully realize its potential you
+1:05:56
+know the from machine learning standpoint there's overfitting and all these problems you cannot solve but now we have a much faster and bigger
+1:06:06
+transistor not transistors bigger capacity microchips and GPUs from Nvidia
+1:06:14
+Nvidia made a huge difference in deep learning history that we can now train
+1:06:20
+these models in a reasonable amount of time even if they're huge another thing
+1:06:25
+I think we do need to take credit for is data the availability of data that was
+1:06:31
+the big data data itself is just you know it doesn't mean anything if you
+1:06:39
+don't know how to use it but in this deep learning architecture data become the driving force for a high capacity model to enable the end-to-end training
+1:06:48
+and to help avoid overfitting when you have enough data so you know so you if
+1:06:55
+you look at the number of pixels that machine learning people had in 2012
+1:07:01
+versus yellow ku had in 1998 it's a huge difference orders of magnitude so so
+1:07:09
+that was that's so this is the focus of 231 n but we'll also go
+1:07:17
+it's also important one last time I'm gonna drilling this idea that visual intelligence does go beyond object recognition I don't want any of you
+1:07:27
+coming out of this course thinking we've done everything you know we've saw vision and if it's the challenge defined the entire space of visual recognition
+1:07:37
+it's not true there are still a lot of cool problems to solve for example you
+1:07:43
+know dense labeling of an entire scene with perceptual groupings I know where
+1:07:49
+every single pixel belong to that's still an ongoing problem combining
+1:07:57
+recognition with 3d is a really there's a lot of excitement happening at the
+1:08:02
+intersection of vision and robotics and this is this is definitely one area of
+1:08:09
+that and then anything to do with motion affordance and and and this is another
+1:08:15
+big open area of research there is a I put this here because Justin is heavily
+1:08:24
+involved in this in this work you know beyond just putting labels on a sink you
+1:08:32
+actually want to deeply understand a picture what people are doing what are the relationship between objects and we start getting into the the relation
+1:08:42
+between objects and this is the ongoing project called visual genome in my lab that justin and a number of my students are involved and this goes far beyond
+1:08:52
+image classification we we talked about and what is one of our Holy Grails well
+1:09:01
+one of the Holy Grails of computer vision is to be able to tell a story of a scene right so think about you as a human you open your eyes the moment you
+1:09:11
+open your eyes you're able to describe what you see and in fact in psychology
+1:09:19
+experiments we find that even if you show people this picture for only 500
+1:09:26
+milliseconds that's literally half of a second people can write essays about it
+1:09:32
+we pay them $10 an hour so they did every it wasn't that long but you know I
+1:09:39
+figure if we took a little longer a little more money they'd probably write longer essays but the point is that our visual system is extremely powerful we
+1:09:50
+can tell stories and I would dream this is my challenge to undress a dissertation that can we give you give a computer one picture and outcomes a
+1:10:03
+description like this you know and we're getting there you'll see work that you
+1:10:08
+give the computer one picture it gives you one sentence or you give the little computer one picture it gives you a bunch of short sentences but we're not
+1:10:18
+here yet but that's one of the Holy Grail and another Holy Grail is continuing this continuing this Atlas I think is summarized really
+1:10:27
+well by Audrey's blog is you know take a picture like this right
+1:10:33
+there's the stories are so refined there's so much nuance in this picture
+1:10:39
+that you get to enjoy not only you recognize the global sea it would be very boring if all computer can tell you is man man man room
+1:10:50
+you know room scale mirror whatever cabinet Locker that's it you know here
+1:10:57
+you recognize who they are you recognize the trick Obama is doing you recognize
+1:11:02
+the kind of interaction you recognize the humor you recognize there's just so
+1:11:07
+much nuance that this is what visual world is about we use our ability to of
+1:11:13
+visual understanding to not only survive navigate manipulate but we use it to
+1:11:20
+socialise to entertain to understand to learn the world and this is where vision
+1:11:27
+you know the grand goals of vision is so and and I don't need to convince you
+1:11:34
+that computer vision technology will make our world a better place
+1:11:40
+despite some scary talks out there you know even going on today in industry as
+1:11:48
+well as research world we're using computer vision to build better robots to save lives to go deep exploring and all this now ok so I have like what two
+1:12:00
+minutes three minutes five minutes left great time let me introduce the team and
+1:12:06
+Andre and Justin are the co instructors with me TAS please stand up when to say
+1:12:13
+hi to everybody can you like to say your name quickly and you're like what year
+1:12:20
+and just don't give a speech but yeah start start with you your name
+1:12:28
+what so so these are the heroes behind the thing and so please stay in touch
+1:12:57
+with us there two really the best way and almost I almost wanted to say the
+1:13:02
+only way and I'll tell you what's the exception is stay in touch through Piazza as well as the staff meeting list anything course related please please do
+1:13:13
+not send any of us personal email because I'm just gonna say this if you don't hear replies or your issue is not taken care of because you send a
+1:13:23
+personal email I'm really sorry because this is a 300 plus people class hour this mailing list actually tags our email and and and and help us to process
+1:13:34
+the only time I respect you to send a personal email mostly to me and Andre
+1:13:41
+and Justin is confidential personal issues you know and I understand if you
+1:13:46
+don't want that to be broadcasted to a team of 10 TAS that's okay
+1:13:51
+but that should be really really minimal at the only time that you send us an
+1:13:58
+email and also you know just again I'm going on my turn to leave for a few
+1:14:04
+weeks starting the end of January so so please if you decide you just want to
+1:14:10
+send an email to me and it's my like due day for her baby
+1:14:15
+I'm not likely going to reply you promptly sorry about that
+1:14:22
+priorities so a couple words about our philosophy out this is we're not going
+1:14:32
+to get into the details we really want this to be a very hands-on project and this is really I give a lot of credit to Justin and Andre they are extremely good
+1:14:42
+at walking through these hands-on details with you so that when you come
+1:14:49
+out of this class you not only have a high level understanding but you have a thorough you have a really good ability to to build your own deep learning code
+1:14:58
+we want you to be exposed to state-of-the-art material you're going to be learning things really that's as fresh as 2015 and it'll be fun
+1:15:09
+you get to do things like this now not all the time but you know like turn a
+1:15:15
+picture into Van Gogh or or this weird and kin thing so it will be a fun class
+1:15:23
+in addition to all the important tasks you are you you learn uh we do have
+1:15:29
+grading policies these are all on our website I'm not going to eat to rate this again one thing I want to be very clear I'm actually two things what is
+1:15:40
+late policy you are grownups we treat you like grown-ups we do not take
+1:15:47
+anything at the end of the courses who my professors want me to go to this
+1:15:52
+conference and I have to have like three more late days no you are responsible
+1:15:57
+for using your total late days you have seven late days you can use them in
+1:16:03
+whatever way you want with zero penalty beyond those you have to take a penalty
+1:16:11
+again if there's like really really exceptional medical family emergency
+1:16:17
+talk to us on an individual basis but anything else conference deadlines other
+1:16:23
+final exams you know like missing cat or whatever is we we we budgeted that into the seven days
+1:16:34
+another thing is honor code this is one thing I have to say with a really straight face you are enough such a privileged institution you're you are
+1:16:46
+grownups I want you to be responsible for honor code every single Stanford student taking this class should know the honor
+1:16:55
+code if you don't there's no excuse you should go back we take collaboration extremely seriously I almost hate to say that's
+1:17:03
+statistically given a class this big we're going to have a few cases but I
+1:17:09
+also want you to be an exceptional class even with the size this big we do not
+1:17:14
+want to see anything that infringes on academic honor code so read the
+1:17:20
+collaboration policies and respect that this this is really respecting yourself
+1:17:25
+ah I think I'm done with you know these pre-requisite you can you can read it I'm done
+1:17:34
+with anything I want to say is there any burning questions that you feel it's
+1:17:40
+worth asking yes a good question Andre do you have
+1:17:51
+midterm move a bit of everything which means they haven't figured it out
+1:18:02
+yeah we will give you sample meters okay all right thank you welcome to the class
+1:18:16
+the water's going
