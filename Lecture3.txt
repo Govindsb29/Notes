@@ -1,0 +1,1358 @@
+0:00
+so before we get to dive into some of the material today on loss functions and
+0:05
+optimization I wanted to go over some administrative things first just as a reminder the first assignment is due on
+0:11
+next Wednesday so you have roughly nine days left and just as a warning Monday is holidays so there will be no class no
+0:18
+office hours so plan out your time accordingly to make sure that you can complete the assignment in time of
+0:24
+course you also have some late days that you can use and allocate among your assignments as you see fit okay so
+0:32
+diving into the material first I'd like to remind you where we are currently last time we looked at this problem of
+0:38
+visual recognition and specifically at image classification and we were talking about the fact that this is actually a
+0:43
+very difficult problem right so if you just consider the cross-product of all the possible variations that we have to
+0:48
+be robust to when we recognize any of these categories such as cat it just seems like such an intractable and
+0:54
+possible problem and not only do we know how to solve these problems now but we can solve this problem for thousands of
+1:00
+categories and the state-of-the-art methods work almost at human accuracy or even slightly surpassing it and some of
+1:06
+those at classes and it also runs nearly in real time on your phone and so
+1:13
+basically and all of this also happened in the last three years and also you'll be experts by the end of this class on
+1:19
+all of this technology so it's really cool and exciting ok so that's the problem of image classification and visual recognition
+Recap
+1:25
+we talked specifically about the data driven approach and the fact that we can't just explicitly hard-code these classifiers so we have to actually train
+1:31
+them from data and so we looked at the idea of having different the training data having different validation splits
+1:36
+where we test out our hyper parameters and a test that that you don't touch too much we look specifically at the example
+1:42
+of the nearest neighbor classifier and someone and the K nearest neighbor classifier and I talked about the CFR 10
+1:48
+dataset which is our tow data set that we play with during this class then I introduce the idea of this approach that
+1:55
+I termed parametric approach which is really that we're writing a function f from image directly to the raw tenant
+2:03
+scores if you have ten classes and this parametric form we seem to be a linear first so we just have F equals WX and we
+2:09
+talked about the interpretations of this linear classifier the fact that you can interpret it as match templates or that you can interpret it
+2:15
+as these images being in a very high dimensional space and our linear classifiers are kind of going in and coloring this space by class scores so
+2:23
+to speak and so by the end of the class we got to this picture where we suppose
+Training Example
+2:28
+we have a training example training data set of just three images here along the columns and we have some classes say ten
+2:34
+classes in C for ten and basically this function f is assigning scores for every single one of these images with some
+2:41
+particular setting of weights which I've chosen randomly here we get some scores out and so some of these results are
+2:47
+good and some of them are bad so if you inspect this course for example in the first image you can see that the correct class which is cat got the score of 2.9
+2:54
+and that's kind of in the middle so some some classes here received a higher score which is not very good some
+3:00
+classes received a much lower score which is good for that particular image the car was very well classified because
+3:06
+the class score a car was much higher than all of the other ones and the Frog was not very well classified at all
+3:11
+right so we have this notion that for different weights these different
+3:16
+weights work better or worse on different images and of course we're trying to find weights that give us
+3:22
+scores that are consistent with all the ground truth labels all the labels in the data and so what we're going to do
+3:28
+now is so far we've only eyeballed what I just described like this is good or that's not so good and so on but we have
+3:33
+to actually give it we have to actually quantify this notion we have to say that this particular set of weights W is say
+3:39
+like 12 bad or 1.5 bad or whatever and then once we have this loss function we're going to minimize it so we're
+3:45
+going to find W that gets us lowest loss and we're going to look into that today so we're going to look specifically into
+3:51
+how we can define a loss function that measures this unhappiness and then we're actually going to look at two different
+3:57
+cases a SVM cost and a soft max cost or a cross entropy cost and then we're
+4:02
+going to look into the process of optimization which is how do you start off with these random weights and how do we actually find very very good setting
+4:08
+of weights efficiently okay so I'm going to downsize this example so that we have a nice working example to work with so
+SVM Loss
+4:15
+suppose we only had three classes instead of you know tens of thousands and we have these three images and these
+4:21
+are our scores for some set of w's and we're going to now try to write down exactly our
+4:26
+happiness with this result so the first loss we're going to look into is termed a multi-class SVM loss this is a
+4:33
+generalization of a binary support vector machine that you may have seen already in different classes I think 229 covers as well and so the
+4:41
+setup here is that we have the score function right so s is a vector of Class
+4:46
+scores these are our s vectors and there's a specific term here loss equals to stuff and I'm going to interpret this
+4:54
+loss now for you so that and we're going to see through a specific example into why this expression makes sense
+5:00
+effectively what the SVM loss is saying is that it's summing across all the
+5:06
+incorrect examples so all the all the something cross all the incorrect scores
+5:11
+classes so for every single example we have that loss and it's something across
+5:17
+all the incorrect classes and it's comparing the score that the correct class received and the score that the incorrect class received J minus s of
+5:24
+why I why I being the correct label plus 1 and then that's maxed of 0 so what's
+5:31
+going on here is we're comparing the difference in the scores and this particular loss is saying that not only
+5:37
+do I want the correct score to be higher than the in credit score but there's actually a safety margin that we're
+5:43
+putting on we're using a safety margin of exactly 1 and we're going to go into
+5:49
+why 1 makes sense to use as opposed to some other hyper parameter that we have to choose there and intuitively you can
+5:56
+look into notes for much more rigorous derivation of exactly why that one doesn't matter but intuitively to think
+6:02
+about this this course are kind of scale-free because I can scale my W I can make it larger or smaller and you're
+6:08
+going to get larger or smaller scores so really there's this free parameter of these scores and how large or small they
+6:14
+can be that is tied to how large your weights are in magnitude and so these scores are kind of arbitrary so using 1
+6:20
+is just an arbitrary choice just on some extent ok so let's see specifically how
+6:25
+this expression works with a concrete example so here I'm going to evaluate that loss for the first example so here
+6:31
+we're computing we're plugging in these scores so we see that we're comparing the score we got for car which is PI
+6:37
+point 1 minus 3.2 which is the correct class our and then adding our safety margin of 1 and the max of 0 and that is really
+6:45
+what it's doing is it's going to be clamping values at 0 right so if we get a negative result we're going to just
+6:50
+clamp it at 0 so if you see for the second-class score the incorrect class of frog negative 1.7 subtracted from 3.2
+6:57
+at a safety margin and we get negative 3 point 9 and then when you work this through you get a loss of 2.9 so
+7:03
+intuitively what you can see here the way this worked out is intuitively the cat score is 3.2 so according to the SVM
+7:10
+loss we we would like ideally is that this course for all the inquiry classes are up to at most 2.2 but the car class
+7:17
+actually had much higher much higher score right than 1 and this difference in what we would have liked which is 2.2
+7:23
+and what actually happened which is 5.1 is exactly this difference of 2.9 which
+7:29
+is how bad of a score outcome this was and in the other case in frog case you
+7:35
+can see that the Frog score was quite a bit lower below 2.2 and so the way that works out in the math is that you end up
+7:41
+getting a negative number when you compare this course and then the max of 0 clamps it at 0 so you get a 0 loss contribution for that particular part
+7:48
+and you end up with a loss of 2.9 okay so that's the loss for this first image
+7:53
+for the second image we're going to again do the same thing plug in the numbers we're comparing the cats go to
+7:59
+the car score so we get a 1 point 3 minus 4 / 9 at a safety margin and the
+8:04
+same for for the other class so when you plug it in you actually end up good with
+8:09
+a loss of 0 and loss of 0 intuitively is because the car score here is it is true
+8:15
+that the car score is higher than all the other scores for that image by at
+8:21
+least one right that's why we got zero score zero loss that is so the constraint was satisfied and so we get
+8:27
+zero loss and in this frog case we end up with a very bad loss because of course the Frog class received a very low score but the other classes received
+8:34
+quite high score so this adds up to an unhappiness of 10.9 and now if we
+8:39
+actually want to combine all of this into a single loss function we're going to do the relatively intuitive transformation here where we just take
+8:45
+the average across all the losses we obtained over the entire training set and so we would say that the loss at the
+8:50
+end when you average these numbers is 4.6 so this particular setting of W on this training data gives us some scores which
+8:59
+we plug into the loss function and we given you get an unhappiness F 4.6 with this result okay so now I'm going to ask
+9:05
+you a series of questions to kind of test your understanding a bit about how this works I'll get into questions in a bit let me just pose my own questions
+9:12
+first first of all what if that sum over there which is the sum over all the
+9:19
+incorrect classes of J what is that was instead sum over all the classes not
+9:25
+just the incorrect ones so what if we allow J to equal to y I why am I actually adding that small constraint in
+9:31
+the sum over there sorry go ahead
+9:36
+yes so in fact what whatever happened is the reason that that's a J not equal to Y I is if we allow J to equal to Y then
+9:43
+score of why I cancel score of Y I you end up with a zero and really what you're doing is you're adding a constant
+9:49
+of one so if that sum is over all the scores then really we'd be just inflating the loss by a constant of one
+9:55
+so that's why that's there second what if we used a mean instead of a sum right
+10:02
+so I'm summing up over all these constraints what if I use the mean just
+10:08
+like I'm using mean to actually average over all the losses for all the examples what if I use the mean over this course
+10:13
+the score constraints good so you're
+10:21
+saying if there were too many classes that would dilute the loss so you're
+10:27
+right in that the absolute value of the loss would be lower so it would be a
+10:34
+constant factor why that's right yeah
+10:43
+some of these choices matter but yes so basically what you're pointing out is if
+10:48
+we did actually do an average here we'd be averaging over the number of classes here but there's a constant number of
+10:54
+classes say three in the specific example so that amounts to putting a constant of one third in front of the
+10:59
+loss and since we're always in the end so that would make the loss lower just like you pointed out but in the end what
+11:04
+we're always interested in is we're going to minimize a W over that loss so if you're shifting your loss up by one
+11:10
+or if you're scaling it with a constant this actually doesn't change your solutions right you're still going to end up with the same optimal w's so
+11:17
+these choices are kind of basically free parameters doesn't matter so for convenience I'm adding a J not equal to
+11:22
+Y I and I'm not actually taking a mean although it's the same thing and the same loss also goes for us for whether
+11:28
+or not we average or sum across the examples okay next question what if we
+11:35
+instead used not the formulation over there but a very similar looking formulation but there's an additional
+11:41
+squared at the end so we're taking the difference between scores plus 1 this margin and then we're squaring that do
+11:50
+we obtain the same or different loss when you think do we obtain the same or
+11:55
+different loss in a sense that if you were to optimize this and find the best W do we get the same result or not yes
+12:10
+so I like the fact that it's divided you would in fact get a different loss it's
+12:17
+not as obvious to see but what one way to see it is that we're not just clearly scaling not just clearly scaling the
+12:26
+loss up or down by constant or shifting it by a constant we're actually changing the difference we were changing the
+12:32
+trade-offs nonlinearly in terms of how the SVM the support vector machine is
+12:37
+going to go there and trade out the different score margins in different examples but it's not obvious to see but
+12:42
+basic it's not very clear but I wanted to illustrate that not all changes to this loss are completely no op and the
+12:50
+second formulation here is in fact about something we call a squared hinge loss instead of the one on top which we call
+12:56
+hinge loss and you can use two different it's kind of a hyper parameter which one you use most often you see the first formulation
+13:02
+that's what we use most of the time but sometimes you can see datasets where the squared hinge loss ends up working better so that's something you play with
+13:08
+that's really a hyper parameter but it's most often used form as the first one let's also think about the scale of this
+13:15
+loss was the min and the max possible loss that you can achieve with the
+13:21
+multi-class SVM on your entire data set what is the smallest value 0 good what
+13:27
+is the highest value yeah it's infinite right so basically the scores could be
+13:34
+arbitrarily terrible so if you're at sign score to the correct example is very very small then you're going to get
+13:40
+your loss going to infinity okay and one more question which becomes kind of
+13:46
+important when we start doing optimization usually when we actually optimize these loss functions we start
+13:51
+off with the initialization of W that are very small weights so what ends up happening is that the scores at the very
+13:56
+beginning of optimization are roughly near zero all of these are like small numbers near zero so what is the loss
+14:03
+when all of these are near zero in this particular case that's right number of
+14:10
+class is minus one so if all the scores are zero then with this particular loss I put down here and by doing an average
+14:16
+across this way we would have achieved a loss of two okay so this is not very important where it's
+14:21
+important is for sanity checks when you're actually starting optimization and you're starting with very small numbers W and you print out your first
+14:28
+loss as you're starting the optimization and you want to make sure that you kind of understand the functional forms and that they can think through whether or
+14:35
+not the number you get makes sense so if I'm seeing two in this case that I'm happy that the further losses may be
+14:40
+implemented correctly and 100% sure but shirt suddenly there's nothing wrong with it right away so it's interesting
+14:47
+to think about these let's see I'm going to go more into this loss a tiny bit but is there a question in terms of this
+14:53
+slide right now good why I wernicki more efficient do not do
+14:59
+them
+15:05
+oh yeah so with the question is and I was asked to repeat the questions would
+15:10
+it be not efficient to actually not have this ugly constraint G I J is not why I because it makes it more difficult to
+15:16
+actually do these easy vectorized implementations of this last implementation so that actually predicts
+Numpy Code
+15:22
+my next slide to some degree so let me just go into that so here's some numpy code for how i would write out to this
+15:27
+loss function in vectorize numpy code so here we're evaluating Li in vectorize
+15:33
+numpy we're getting a single example here so X is a single column vector y is an integer specifying the label and W is
+15:40
+our weight matrix so what we do is we evaluate this course which is just W times X then we compute these margins
+15:46
+which is the difference between the scores we obtain and the correct score plus 1 so these are numbers between 0
+15:53
+and whatever and then see this additional online margins at y equals 0 why is that there yeah exactly so
+16:04
+basically I'm doing this efficient vectorized implementation which goes to your point and then I want to erase that
+16:09
+margin there because I'm certain that margins that Y currently is 1 and I don't want to inflate my score and so
+16:16
+I'll set that to 0 sorry yes I suppose you could subtract one at the end as
+16:23
+well that's right so we can optimize this if we want but we're not going or not going
+16:28
+to think about this too much if you do if you do in your assignment that's very welcome for extra bonus points and then
+16:34
+we're summing up this margins and so we get lost again ok going back to the
+16:40
+slide any more questions about this formulation and by the way this formulation if you wanted to make it if
+16:45
+you actually write it down for just two classes you'll see that it reduces to a binary support vector machine loss okay
+16:55
+cool so we'll see a different loss function soon and then we're going to look at comparisons of them as well but for now
+Loss Function
+17:01
+actually so at this point what we have is we have this linear mapping to get
+17:06
+scores and then we have this loss function which have now written out and it's full form where we have these differences between this course +1 sum over the
+17:15
+incorrect classes and the Sun and the average across all the examples right so that's the loss function right now now
+17:20
+I'd like to convince you that there's actually a bug with this loss function in other words if I'd like to use this
+17:25
+loss on some data set in practice I might get some not very nice properties
+17:31
+okay if this if this was the only thing I was using by itself and it's not completely obvious to see exactly what
+17:38
+the issue is so I'll give you guys a hint in particular suppose that we found the W such that we're getting zero loss
+17:45
+okay on some data set and now the question is is this W unique or phrase
+17:56
+in another way can you give me a W that would be different but also definitely achieves a zero loss in the back that's
+18:08
+right and so you're saying we can scale it by some constant alpha and in particular alpha must obey some constraint you'd probably want it to be
+18:19
+greater than one right so basically what I can do is I can if i change my weights and i make them larger and larger all i
+18:26
+would be doing is i'm just create making this score difference larger and larger as ice kml w right because of the linear
+18:32
+lost form here so basically that's not a very desirable property because we have the this entire subspace of W that is
+18:38
+optimal and all of them are according to this loss function completely the same but intuitively that's not like a very
+18:45
+nice property to have and so just to see this numerically to convince yourself that this is the case I've taken this
+18:51
+example where we achieved previously zero loss there before and now suppose I multiply my WI twice I mean this is a
+18:58
+very simple math going on here but basically I would be inflating or my scores by two times and so their
+19:04
+difference would also become just larger so if all your score differences inside the max of 0 were already negative then
+19:10
+they're just going to become more and more negative and so you end up with larger and larger negative values inside the maxes and they're just become 0 all
+19:17
+the time right good
+19:23
+so all the scale in fact it would have to be larger than one because let's see
+19:33
+yes so there's that added margin of 1 which is company things yeah okay another question with the scaling apply
+19:45
+to this to the bias part so here I'm just I guess I'm not assuming the bias
+19:51
+for simplicity but yeah basically these scores are W X plus P so so you're just
+19:57
+yet forget the bias and we're just killing W by itself okay cool so the way
+20:04
+to fix this is intuitively we have this entire subspace of WS and it all works the same according to this loss function
+20:10
+and what we'd like to do is we'd like to have a preference over some WS over others just based on intrinsic you know
+20:16
+what what do we desire of W to look like forget what the data is just what what are nice things to have about a W and so
+Regularization
+20:23
+this introduces the notion of regularization which we're going to be attending to our loss function so we have an additional term there which is
+20:29
+lambda times a regularization function of W and the regularization function measures the niceness of your W okay and
+20:35
+so we don't only want to fit the data but we also want W to be nice and we're going to see some ways of framing that
+20:43
+and exactly why they make sense and intuitively what's going on is regularization is a way of trading off
+20:48
+your training act your training loss and your generalization loss on a test set
+20:53
+so intuitively regularization is a set of techniques where we're adding objectives to the loss which we'll be
+20:59
+fighting with this guy so this guy just wants to fit your training data and that guy wants W to look some particular way
+21:05
+and so they're fighting each other sometimes in your objective because we want to simultaneously achieve both of
+21:10
+them but it turns out that adding these regularization techniques even if it makes your training error worse so we're
+21:15
+not correctly classifying all the examples what you notice is that the test set performance ends up being better and we'll see an example of why
+21:22
+that might be actually with the neck for now I just wanted to point out in the next slide but for now I just want to
+21:28
+point out that the most common form of regularization is the what we call l2 regularization or weight decay
+21:34
+and really what we're doing is supposed W in this case is a 2d matrix so I have two sums over K and L the rows and
+21:40
+columns but really is just all the element wise W squared and we're just putting them all into the loss okay so
+21:46
+this this particular regularization it likes W is to be 0 right so when W is
+21:52
+all 0 then regularization is happy but of course W can't be all 0 because then you can't classify so these guys will
+21:58
+fight each other there are different forms of regularization with different pros and cons we'll go into some of them
+22:05
+much later in the class and I just like to say for now that basically l2 regularization is the most common form
+22:11
+and that's what you'll use a quite often in this class as well so now I'd like to convince you I'd like to convince you
+Regularization Example
+22:18
+that this is a reasonable thing to want out of a w that it's weights are small so consider this very simple cooked up
+22:24
+example to get the intuition suppose we have an example where we are in four
+22:30
+dimensional space where we're doing this classification and we have an input vector of just all one's X and now
+22:35
+suppose we have these two candidate weight matrices or weight single weights I suppose right now so one of them is 1
+22:41
+0 0 and the other is 0.25 everywhere since we have linear loss functions
+22:47
+you'll see that their effects are the same so basically the way we are evaluating score is by WX so the dot
+22:54
+product with X is identical for both of these this course would come out both of these but regularization would strictly
+23:01
+favor one of these over the other which one would the regularization cost favor even though their effects are the same
+23:06
+which one is better in terms of regularization the second one right and
+23:12
+so the regularization will tell you that even though they are achieving the same effects in terms of the data loss classification down the road we actually
+23:19
+significantly prefer the second one what's better about the second one why is that a good idea to have
+23:28
+sorry can you repeat that that's correct
+23:34
+so well that's one that's the interpretation I liked the most as well it takes into account the most number of
+23:40
+things in your ex vector right so what this ultra regularization wants to do is it wants to spread out your w's as much
+23:47
+as possible so that you're taking into account all the input features or all the input pixels it wants to use as much
+23:52
+of those as many of those dimensions as it likes if it's achieving the same effect intuitively speaking and so
+23:59
+that's better than just focusing on just one input dimension it's just nice it's
+24:04
+something that often works in practice basically just the way things are big assets are arranged and the properties
+24:11
+that they usually have statistically ok any questions about this so regularization good idea everyone is
+24:17
+sold ok great so basically our losses will always have this form where we have the data loss and then we'll also have a
+24:24
+regularization it's a very common thing to have in practice ok I'm now going to go into the second classifier the
+24:30
+softmax classifier and we'll see some differences between the support vector machine and this soft max classifier in
+24:36
+practice these are kind of like these two choices that you can have either SVM or soft max the most two commonly used
+24:42
+linear classifiers often you'll see that soft max classifier is preferred and I'm
+24:47
+not exactly sure why because usually they end up working about the same and I just like to mention that this is also
+24:53
+sometimes called multinomial logistic regression so if you're familiar with logistic regression this is just a generalization of it into multiple
+24:58
+dimensions or in this case multiple classes not just you was there a question over there or
+25:14
+yes the question is why do we want to use regularization basically so I don't think I sold it very well if you're
+25:22
+compose you have this entire sub base of voice that is all achieving the same effects we'd like to pick between them in some
+25:31
+way and I think what I'm arguing for is that wanting low w's is a reasonable way
+25:36
+to pick among them and the l2 regularization will favor diffuse double use like in this case here and one of
+25:43
+the intuitive ways in which I can try to pitch why this is a good idea is that
+25:48
+diffuse weights basically see this w1 is a completely ignoring your inputs to 3 &
+25:54
+4 but w2 is using all of the inputs right because the weights are more diffuse and so intuitively this just ends up usually
+26:00
+working better at a test time because
+26:06
+more evidence is being accumulated into your decisions instead of just one single evidence one single feature
+26:16
+that's right
+26:21
+that's right that's right so the idea here is that these two W 1 and W 2
+26:27
+they're achieving the same effect so this data loss suppose that that's basically it doesn't care between the
+26:33
+two but the regularization expresses preference for them and since we have it in the objective and we're going to end up optimizing over this loss function so
+26:40
+we're going to find the W that simultaneously accomplishes both of those and so we end up at W that not
+26:45
+only classifies correctly but we also have this added preference that actually we want it to be and we want it to be diffused as much as possible awesome
+26:53
+good yes so in this particular example
+27:02
+l1 would also be indifferent l1 has some nice properties which I don't want to go into right now we might cover it later
+27:08
+l1 has some property is like a sparsity inducing properties where if you end up
+27:16
+having l1 s into your in your objectives you'll find that lots of WS will end up being exactly 0 for reasons that we
+27:22
+might go into later and that sometimes is like a feature selection almost and so l1 is another alternative that we
+27:30
+might go into a bit more later good
+27:46
+yes so the question is yeah so you're pointing out that isn't it may be a good
+27:51
+thing that we're ignoring features and just using one of them yeah so there's
+28:00
+many technical reasons why regularization is a good idea I wanted to give you just basic intuition so
+28:06
+maybe uh maybe I failed at that but I I think that's a fair point um yep I'm not
+28:14
+sure if I have a good return I would have to good can you say that like epsilon zero zero would do the exact
+28:21
+same thing use W one small number so that but that factor would be the exact
+28:29
+same thing but also has more much more regulation so you want to consider a
+28:35
+different W and you want to looks like a different from these two I'm just saying like the previous question was like
+28:44
+isn't it great that we're ignoring some valleys why why would you yeah isn't
+28:51
+that a feature not a bug that we're ignoring some inputs yeah that's not saying that you could just have like point zero zero one zero
+28:59
+zero as another W vector that would do exactly the same thing is the
+29:04
+in terms of its decisions but I see okay
+29:11
+thanks yeah I didn't want to die too too much
+29:16
+into this there's actually like an entire literature of regularization and looking at the test error and actually uh you know writing theorems in learning
+29:23
+theory and you saw some of that in 229 and there are some results on why regularization is a good case in it in
+29:29
+those areas and I don't think I won't want to go into that and it's also also beyond the scope of this class so for
+29:35
+this class just that ultra regularization will make your test error better okay so I'm going to go into
+Softmax Function
+29:42
+softness classifier now which is this generalization of logistic regression so
+29:47
+the way the way this will work is this is just a different functional form for how loss is specified on top of B scores
+29:53
+so in particular there's this interpretation that softness classifier puts on top of these scores these are
+29:59
+not just some arbitrary scores and we want some margins to be met but we have specific interpretation that is maybe
+30:05
+more principled kind of from a probabilistic point of view where we actually interpret these scores not just
+30:12
+as these things that mean margins but these are actually the unnormalized lock probabilities that are assigned to different classes okay so we're going to
+30:21
+go into exactly what this means in a bit so these are unnormalized lock probabilities of all the Y's given the
+30:27
+image so in other words we're assuming that if the scores are unknown y's log
+30:33
+probabilities then the way to get probabilities of different classes like class k is that we take the score we
+30:39
+exponentiate all of them to get the unnormalized probabilities and we normalize them to get the normalized
+30:46
+probabilities so we divide by the sum over all the exponentiated scores and
+30:52
+that's how we actually get this expression for a probability of a class given the image and so this function
+30:58
+here is called the softmax function if you if you see it somewhere it's the e to the the element you're currently
+31:04
+interested in divided by the sum over all exponentiated scores okay and so the
+31:09
+way this will work basically is if we're in this probabilistic framework where we are looking at we're deciding that this is the probability of different classes
+31:16
+then makes sense of what you want usually want to do in this setting we have a probability over different classes one of these is
+31:22
+correct so we want to just maximize the log likelihood of for the loss function
+31:27
+and sorry we want to maximize the log likelihood of the true class and since
+31:35
+we're writing a loss function we want to minimize the negative log likelihood of the true class okay so you end up with a
+31:42
+series of expressions here really our loss function is we want the log likelihood of the correct class to be
+31:48
+high so negative of it want to be low and the log likelihood is softmax function of your scores let's look at a
+31:54
+specific example to make this more clear okay and here I've actually like subbed
+31:59
+in that expression so that this is the loss negative log of that expression let's look at how this expression works
+32:05
+and I think it will give you a better intuition of exactly what this is doing lights what's computing so suppose here
+32:10
+we have these scores that came out from our neural network or from our linear classifier and these are the
+32:16
+unnormalized log probabilities so as I mentioned we want to exponentiate them first because under this interpretation that gives us the normalized
+32:22
+probabilities and now probability is always sum to one so we have to divide by the sum of all of these so we add up
+32:30
+these guys and we divide to actually get probabilities out so under this interpretation we've carried out the set
+32:36
+of transformations and what this is saying is that in this interpretation the probability assigned to this image
+32:41
+of being a cat is 13% car is 87 percent and frog is very unlikely 0% so these
+32:48
+are the probabilities and now normally in this setting you want to maximize the log probability because it turns out
+32:53
+that maximizing just the raw probability is not as nice mathematically so normally you see maximizing log
+32:59
+probabilities and then so we want to minimize the negative log probability so the correct class here is cat which is
+33:06
+only having 13% chance under this interpretation so negative log of 0.1 3
+33:12
+gives us 0.89 and so that's the final that's the final loss that we would
+33:17
+achieve for this class here under this interpretation of a soft soft mess
+33:23
+classifier so 0.894 sometimes okay so let's go over some examples let's go
+33:29
+over some questions now related to this to try to interpret exactly how this works first where's the min and the max
+33:35
+possible loss with this lost function so that's the lost function what is the smallest value and the highest value so
+33:43
+I'll give you a chance to think about is what is the smallest value that we can achieve zero and how would that happen
+33:51
+okay good so if you're correct class is getting probability of one where we have
+33:57
+a one which will plug into the log and we're getting negative log of 1 which is zero and the highest possible loss
+34:04
+infinite so just as with SVM we're getting the same zero is minimum and infinite is maximum so infinite loss
+34:12
+would be achieved if you end up giving your cat score very tiny probability and then log of zero gives you negative
+34:18
+infinity so negative that is just infinite so yeah so the same balance as
+34:24
+SVM and also this question normally when we initialize W with roughly small you
+34:31
+small weights we end up with all the scores that are nearly zero what ends up being the loss in this case if you're
+34:37
+doing sanity checks at the beginning of your optimization what do you expect to see as your first loss
+34:47
+yeah yeah that's right so it's negative
+34:54
+log of one over number of classes so you'd basically be getting all zeros here you get all ones here and so here
+35:01
+is one over the number of classes and then negative log of that ends up being your final loss so actually for myself
+35:07
+whenever I run optimization I sometimes take note of my number of classes and I evaluate negative log of one over the
+35:13
+number of classes and I'm trying to see what is the my first beginning loss that I expect and so when I start the optimization I make sure that I'm
+35:19
+getting roughly that otherwise I know something's maybe slightly off I expect to get something on that order moreover
+35:24
+as I'm optimizing I expect that I go from that to zero and if I'm seeing negative numbers then I know from the
+35:30
+functional form that something very strange is going on right because you never actually expect to get negative numbers out of this so
+35:35
+that's the softmax loss I'll show you one more slide and I'll take some questions just to reiterate the difference between them and really what
+35:42
+they look like is we have the score function which gives us WX times B we get our scores vector and now the
+35:48
+difference is just how they interpret what B scores coming out from this F function is so either is just random
+35:56
+scores no interpretation whatsoever we just want the large larger score the correct score to be some margin above
+36:02
+the incorrect scores or we interpret it to be these unnormalized log probabilities and then in this framework
+36:07
+we first want to get the probabilities and then we want to maximize the probability of the correct classes or the log of them and so that ends up
+36:14
+giving us the loss function for south max so they start off with the same way but they just happen to get a different
+36:21
+result we'll go into exactly what the difference is of them are in a bit there
+36:26
+are questions for now that's correct so
+36:34
+they they take about the same time to calculate for sure especially once you have a ComNet your classifier is near
+36:39
+instantaneous to evaluate most of the work is done in doing all the convolutions and so we'll see that the
+36:45
+classifier and especially the loss is roughly the same of course softmax
+36:50
+involves some X and so on so these operations are slightly more expensive perhaps but usually it completely washes
+36:56
+away compared to everything else you're worried about which is all the convolutions over the image
+37:16
+sorry I didn't catch your question for you why do we want to maximize lock
+37:23
+probabilities instead of probabilities directly it turns out when you so this
+37:30
+is partly covered in 229 when you do logistic regressions and so on if you just want to maximize probability it
+37:35
+would be the exact same problem because log is a monotonic function and so maximizing the probability and
+37:41
+maximizing the log probability give you the identical result but in terms of the math everything comes out much nicer
+37:46
+looking when you actually put a lot of there but it's the exact same optimization problem okay cool let's
+37:53
+look at some interpretations of these two and exactly how they differ so south max versus SVM and trying to give you an
+37:58
+idea about one property that actually is quite different between the two so they're these two different functional
+38:04
+forms and now assume that we have these three examples all three examples and
+38:10
+suppose there are three classes three different examples and these are the scores of these examples and for every
+38:15
+one of these examples the first class here is the correct class so 10 is the correct class score and the other scores
+38:20
+are these guys either the first one second or third one and now just think
+38:27
+about what these losses tell you about how desirable these outcomes are in
+38:32
+terms of that W in a particular one way to think about it for example is suppose I take this data point the third one 10
+38:38
+negative 100 negative 100 and suppose I jiggle it like I move it around a bit in
+38:44
+my input space what is happening to the losses as I do that
+38:57
+okay I'll do this so they increase and decrease as I wiggle this data point round do they both increase or decrease
+39:03
+for the third data point for example SVM
+39:09
+remains the same correct and why is that it's because the margin was met by a huge amount so there's this added
+39:14
+robustness when I take this data up when I shake it around the SVM is already very happy because the margins were met
+39:21
+by you know we desire a margin of 1 and here we have a margin of 109 so
+39:26
+basically there's a huge amount of margin the SVM doesn't express a preference over these examples where this course come out very negative then
+39:33
+the SVM adds no additional preference over do I want these to be negative 20 or negative 100 or negative a thousand
+39:38
+the SVM won't care but the S but the softmax could always see you will always get an
+39:44
+improvement for softmax right so softmax function expresses preference for it ones these to be negative 200 or 500 or
+39:51
+a thousand all of them would give you better loss right but the SVM at this point doesn't care and for the other
+39:57
+examples I don't know if it's as I mean that's one clear distinction right so the SVM has this added robustness to it
+40:02
+wants this margin to be met but beyond that it doesn't micromanage your scores where softmax will always want these
+40:08
+scores to be you know everything here nothing there and so that's one kind of
+40:13
+a very clear difference between the two I was our question good
+40:24
+yes so the margin of one I mentioned very briefly that that's not a hyper parameter you can fix it to be one the
+40:30
+reason for that is that these scores they're the kind of the absolute values
+40:35
+of those scores are kind of a they don't really matter because my W I can make it
+40:41
+larger or smaller and I can achieve different size scores and so one turns
+40:46
+out to work better and in the notes I have a longer derivation where I go into details exactly why one is safe to
+40:52
+choose so I refer to that but I didn't want to spend time on it in the lecture oh so zero would be if you wanted to use
+41:02
+zero that would be trouble you can use any positive number and that would give you an SVM if you use zero that would
+41:09
+look different so one example for
+41:14
+example this added constant there one property it gives you when you actually go through the mathematical analysis like saying the SVM in CS 229 is you
+41:21
+will see that it achieves this max margin property where the SVM will find that the best margin when you actually
+41:28
+have a plus constant there combined with the l2 regularization on the weights so you want very small weights that meet a
+41:34
+specific margin and SVM will give you this very nice max margin property that
+41:39
+I didn't really go into in this in this lecture right now but but basically do want the positive number there otherwise
+41:45
+things would break good
+41:59
+um yeah is there so you're saying we're
+42:04
+taking this exponential of these numbers that are real numbers and we're interpreting them as probabilities we're
+42:10
+kind of free to so we decided you're getting these scores out and it's up to
+Interpretation
+42:15
+you to to endow them with interpretation right we can have different losses in this specific case I showed you
+42:20
+multi-class SVM there's in fact multiple versions of a multi-class SVM you can fiddle around with exactly the loss
+42:25
+expression and one of the one of the interpretations we can put on this
+42:30
+course is that there are these unnormalized block probabilities they can't be normalized because they just can't we have to normalize them
+42:36
+explicitly because there's no constraint that the output of your function will be normalized and they have to be they
+42:43
+can't be probabilities because you're outputting just these real numbers that that can be positive or negative so we
+42:49
+interpret them as LOC probabilities and and that requires us to exponentiate them it's a very bad kind of explanation
+42:56
+of it because the thing is good
+43:13
+yeah that's right so there are really cool or connections to physics and how they actually think about loss functions
+43:19
+for them energy and loss is like kind of an equivalent as well good once it goes
+43:31
+beyond the certain margin of two or three and just wind exponentiated the difference you will get in software
+43:36
+you will be vanishingly small so you're talking about so say for example in this
+43:44
+case yeah and now you arguing about save this one yeah that's right so what you're saying
+43:57
+I think if Einstein correctly is the softmax would already look at this and give zero probabilities here and one
+44:03
+here right so you're saying if I jiggle this around nothing's changing I think the difference is the loss would
+44:08
+definitely change for softmax even though it wouldn't change a lot but it would definitely change so softmax still expresses preference whereas SVM
+44:15
+gets you identically zero right yeah
+44:22
+yeah so the preference wouldn't be very big but they're different layers preference but in practice basically this distinction the intuition I'm
+44:29
+trying to give you is that the SVM has a very local part of the space in which
+44:36
+you're classifying that it cares about and beyond it it's invariant and the
+44:41
+softmax kind of is a function of the full data cloud it cares about it cares about all the points in your data cloud
+44:46
+not just you know there's like a small class here that you're trying to separate out from everything else a soft
+44:52
+max will kind of consider the full data cloud when it's fitting your plane and SVM will just want to separate out that
+44:57
+tiny piece from the immediate part of the data cloud like that in practice
+45:02
+when you actually run these they kind of give nearly identical results almost always so really what I'm trying to I'm
+45:09
+not trying to pitch one or the other I'm just trying to give you this notion that you're in charge of the last function
+45:14
+you get some scores out and you can write down nearly any mathematical expression as long as it's differentiable into what you want your
+45:21
+scores to be like and there are different ways of actually formulating this and actually two examples that are common to seem
+45:27
+practice but in practice we can put down any losses for what you want your scores to be and that's a very nice feature
+45:33
+because we can optimize over all of it okay let me show you an interactive web demo at this point jefra
+Interactive Demo
+45:45
+all right let's see you this so this is
+45:52
+an interactive demo in our class page you can find it at this URL I wrote it last year and I have to show
+45:57
+it to all of you guys to justify spending one day on developing all this okay but I'm not sure last year not too
+46:04
+many people looked at this okay but basically this is one day of my life you should all look at this so we have here
+46:12
+is a two-dimensional problem with three classes and I'm showing here three
+46:17
+classes each has three examples over here in two dimensions and I'm showing the three classifiers here is the level
+46:23
+set so for example the red classifier is has scores of zero along the line and then I'm showing the arrows in which the
+46:29
+scores increase right here's our W matrix so as you recall this W matrix
+46:35
+the rows of that W matrix are the different classifiers so we have the blue classifier red-green classifier and
+46:40
+red classifier and we have both the weights for both the X and the y component and also the biases and then
+46:46
+here we have need data sets so we have the X and the y coordinate of all the data points their correct label and this
+46:52
+course as well as the loss achieved by all those data points right now with this setting of W and so you can see
+46:59
+that I'm taking the mean over all the loss so right now our data loss is two point seven seven regularization loss
+47:04
+for this w is three point five and so our total loss is six point two seven okay and so basically you can fiddle
+47:10
+around with this so let's see so as I change my W you can see that here I'm
+47:16
+making my W one of the W is bigger and you can see what that does in in there
+47:22
+or the bias you can see that the bias basically shuts these hyperplanes okay
+47:28
+and then what we can do is we can what we're going to work this is kind of a preview of what's going to happen we're
+47:33
+getting the loss here and then we're going to do back propagation which is giving us the gradient over how we want to
+47:39
+just these double use in order to make the loss smaller and so what we're going to do is this repeated updates where we
+47:46
+start off with this w but now I can improve I can improve this set of WS so when I do a parameter update this is
+47:54
+actually using these gradients which are shown here in red and it's actually making a tiny change to every single
+47:59
+parameter according to this gradient right so as I do parameter update you can see that the
+48:04
+loss here is decreasing especially the total loss here so the loss just keeps getting better and
+48:10
+better as I do parameter update so this is the process of optimization that we're going to go into in a bit so I can
+48:17
+also start a repeated update and then basically we keep improving this W over and over until our loss it started off
+48:22
+was roughly three or something like that so now our mean loss over the data is 0.1 or something like that and we're
+48:29
+correctly classifying all these all these points here so I can also
+48:36
+randomized randomized W so just kind of knocks it off and then this always converges to the exact same point
+48:41
+through the process of optimization and you can play here with the
+48:46
+regularization as well you have different forms of a loss so the one I've shown you right now is the Western
+48:52
+Watkins SVM formulation there's a few more SVM formulations and there's also soft max here and you'll see that when I
+48:58
+switch to soft max loss our losses look different and but the solution ends up
+49:05
+being roughly the same so when I switch back to an SVM you know the hyper planes move around the tiny bit but really it's
+49:10
+it's mostly the same and so anyways so
+49:16
+this is the step size so this is how much how big of steps are we making when
+49:22
+we get the gradient on how to improve things so randomized parameters we usually start with the berry mix this
+49:27
+step size these things are jiggling trying to separate out these data points and then over time what we're going to be doing in optimization as we're going
+49:33
+to decrease our update size and this thing will just slowly converging on the
+49:39
+parameters that we want in the end and so so you guys can play with this and you can see how these scores jiggle
+49:44
+around and what the loss is and if I stop a repeated update work with yours you can also drag these points but I
+49:52
+think on the Mac it doesn't work so : so when I try to drag this point it disappears so but it works on a desktop so I don't
+50:00
+want to go in and figure out exactly what happened there but so you can play with this okay so I'm going to go into
+50:15
+the process optimization now just to give you a sense of what this looks like so we have this app function we have
+50:23
+these two formulations that I've shown you and the full loss is achieved as the mean loss over data plus regularization
+50:28
+this is one other diagram to show you how what this looks like I don't think
+50:34
+it's a very good diagram and there's something confusing about it that I can't remember from last year but basically you have this data x and y
+50:40
+your images and your labels and there's w and we're computing this course and
+50:47
+getting the loss and the regularization loss is only a function of the weights not of the data and basically what we
+50:54
+want to do now is we don't have control over the data set right that's given to us but we have control over that W and
+50:59
+as we change that W the loss will be different so for any W you give me I can
+51:05
+compute the loss and that loss is linked to how well we're classifying all of our examples so one thing a low loss means
+51:11
+we're classifying them very very well on the training data and then we're crossing our fingers that that also works on on some test data that we
+Optimization
+51:18
+haven't seen so here's one strategy for optimization it's a random search so
+51:24
+because we can evaluate loss for any arbitrary W what I can afford to do and I'm not sure I don't want to go through
+51:30
+this in full detail but effectively I randomly sample W's and I can check their loss and I can just keep track of
+51:35
+the W that works best okay so that's an amazing process of optimization of guess
+51:41
+and check and it turns out if you do this I think I tried a thousand times if
+51:46
+you do this a thousand times and you take the best W found at random and you run it on your C for ten data
+51:51
+test data you end up with about fifteen point five percent accuracy and since there are ten classes and see far the
+51:57
+mean the baseline is a ten percent that's our chance performance so fifteen
+52:02
+point five there's some signal actually indelibly and so state of the art is at 95 which is a covenant so we have some gap to
+52:09
+clothes over the next two weeks or so so this is so don't use this just because
+52:16
+it's on the slides one interpretation of exactly what this looks like this process of optimization is that we have
+52:21
+this lost landscape right this lost landscape is in this high dimensional W space so here we I guess if you're 3d
+52:29
+and your loss is the height then you only have to double use in this case and you're here and you're blindfolded
+52:37
+that's your current W you can't see where the valleys are but you're trying to find low loss and so you're
+52:42
+blindfolded and you have an altitude meter and so you can tell what your losses at any single point and you're
+52:47
+trying to get to the bottom of the valley right and so that's really the process of optimization and what we've
+52:55
+shown what I've shown you so far is this random optimization where you teleport around and you just check your altitude
+53:00
+right so not the best idea so we're going to do instead is we're going to use what I refer to already as a
+53:06
+gradient or really we're just computing the slope across in every single direction so I'm trying to compute the
+53:14
+slope and then I'm going to go downhill okay so we're following the slope I'm not going to go into too much detail on
+Gradient Expression
+53:20
+this but basically there's an expression for the gradient which is defined like that there's a derivative calculus 101 a
+53:29
+definition in multiple dimensions if you have a vector of derivatives that's referred to as the gradient right so
+53:35
+because we have multiple dimensions multiple w's we have a gradient vector okay so this is the expression and in
+53:43
+fact we can numerically evaluate this expression before I go into the analytic solution I'll just show you what that would look like to evaluate a gradient
+53:49
+at some W so suppose we have some current W and we're getting some loss okay what we want to do now is we want
+53:56
+to get an idea about the slope at this point so we're going to basically look
+54:02
+at this formula and we're just going to evaluate it so I'm going to go in the first dimension and I'm going and really
+54:07
+what this formula is telling you to do is evaluate X plus your altitude at X plus h subtracted from f of X and divide
+54:14
+by h what that corresponds to is me being on this length scale taking a small step in some direction
+54:20
+and looking whether or not my foot went up or down right that's what the gradient is telling me so suppose I took
+54:26
+a small step and the loss there is one point two five then I can use that formula with a finite difference
+54:32
+approximation where I've used the small H to actually derive that the gradient here is negative two point five the
+54:37
+slope is downwards so I took a step the loss decreased so this is sloping downwards in terms of the loss function
+54:43
+so negative two point five in that particular dimension so now I can do this for every single dimension
+54:48
+independently right so I go into the second dimension I add a small amount so I step in a different direction I look
+54:54
+at what happened to the loss I use that formula and it's telling me that the gradient the slope is point six and I
+55:00
+can do that in the third dimension and I get the gradient there okay so what I'm referring to here is I'm basically
+55:06
+evaluating the numerical gradient which is using this finite difference approximation where for every single
+55:12
+dimension independently I can take a small step I can evaluate the loss and that tells me the slope is it going
+55:18
+upwards or downwards for every single one of these parameters and so this is evaluating numerical gradient the way
+55:25
+this would look like is a Python function here it looks ugly because it turns out it's slightly tricky to
+55:30
+iterate over all the W's but basically we're just looking at f of X plus h comparing to f of X and dividing by H
+55:36
+and we're getting the gradient now the problem with this is if you want to use the numerical gradient then of course we
+55:43
+have to do this for every single dimension to get a sense of what the gradient is in every single dimension and right when you have a ComNet you
+55:51
+have hundreds of millions of parameters right so we can't afford to actually check the loss in hundreds of millions
+55:57
+of parameters before we do a single step so this approach where we would try to evaluate the gradient numerically is
+56:04
+first of all it's approximate because we're using finite difference approximations but second is also extremely slow because I need to do
+56:10
+million checks of the last function on my ComNet before I know what the gradient is and I can take a parameter
+56:16
+update so very slow approximate turns out that this is also silly right
+56:22
+because the loss is a function of W as we've written it out and really what we
+56:28
+want is we want the gradient of the last function with respect to W and luckily we can just write that down thanks to these guys you actually know
+56:37
+who those guys are right away you need to know the light knits that's right
+56:42
+do you know which is which because they look this it's just uh yeah they look a
+56:48
+remarkably similar but basically nice enlighten it's sort of two inventors of calculus there's actually controversy
+56:54
+over who really invented calculus and these guys fought each other over it but
+56:59
+basically calculus is this powerful hammer and so what we can do is instead of doing the silly thing where we're
+57:04
+evaluating numerical gradient we can actually use calculus and we can write down an expression for what the gradient
+57:10
+is off that lost function in the weight space so basically instead of fumbling around and doing this is it going
+57:16
+upwards it going down by checking the loss I just have an expression where I take the gradient of this and I can sing
+57:22
+simply evaluate what that entire vector is so that's the only way that you can actually run this in practice right we
+57:27
+can just have an expression for here's the gradient we can do a step and so on so in summary basically numerical
+Summary
+57:34
+gradient approximate slow but very easy to write because you're just doing this very simple process for any arbitrary
+57:40
+loss function I can get the gradient vector for analytic gradient which is you actually do calculus it's exact no
+57:47
+finite approximations it's very fast but it's error-prone because you actually have to do math right so in practice
+57:54
+what you see is we always use analytic gradient we do clear calculus we figure out what the gradient should be but then
+58:00
+you always check your implementation using a numerical gradient check as it's referred to so I will do all my calculus
+58:07
+I figure out what the loss function should be I write an expression for the gradient I evaluate it in my code so I
+58:14
+get an analytic gradient and then I also evaluate a numerical gradient on the side and that takes awhile but you
+58:19
+enumerate your you evaluate your numerical gradient and you make sure that those two are the same and then we
+58:24
+say that you pass the gradient check okay so that's what you see in practice whenever you try to develop a new module
+58:29
+for your neural network you write out at Sloss you write the backward pass for it that computes the gradient and then you
+58:35
+have to make sure the gradient check it just to make sure that your calculus is correct and then I've already referred
+Step Size
+58:40
+to this process of optimization which we saw nicely in the web demo where we have this loop when we optimize
+58:47
+where we simply evaluate the gradient on your loss function and then knowing the gradient we can perform a parameter
+58:53
+update where we change this W by tiny amount in particular we want to update with the negative step size times the
+59:00
+gradient the negative is there because the gradient tells you the direction of the greatest increase it tells you which
+59:06
+way the loss is increasing and we want to minimize it which is where the negative is coming from we have to go into negative gradient direction step
+59:13
+size here is a hyper parameter that will cause you a huge amount of headaches step size or learning rate this is the
+59:18
+most critical parameter to basically worry about that really there's two that
+59:25
+you have to worry about the most the step size or learning rate and there's the weight regularization strength
+59:30
+lambda that we saw already those two parameters are really the two largest headaches and that's usually what we cross validate over was there a question
+59:38
+in the back by the way it's not that
+59:45
+gradient is just gradient it tells you the slope in every single direction and
+59:50
+then we just take a step size step of it so the process of optimization in this
+59:55
+weight space is you're somewhere in your W you get your gradient and you March some amount in the direction of the
+1:00:01
+gradient but you don't know how much so that's the step size and you saw that when I increase the step size in the
+1:00:07
+demo things were jiggling generating around quite a lot right there was a lot of energy in the system that's because I was taking huge jumps all over this
+1:00:13
+basin so here the loss function is minimal at the blue part there and it's high in the red parts so we want to get
+1:00:20
+to them lowest part of the basin this is actually what the loss function looks like for an SVM or for legislation these
+1:00:27
+are convex problems so as you really just a bowl and we're trying to get to the bottom of it but this bowl is like 30,000 dimensional so that's why it
+1:00:33
+takes a while okay so we take a step and we evaluate the gradient and repeat this
+1:00:39
+over and over in practice there's this additional part that I wanted to mention where we don't actually evaluate the
+1:00:45
+loss for the entire training data set in fact what we do is we only use what's
+1:00:51
+called a mini batch gradient descent where we have this entire data set but we sample batches from it so we sample
+1:00:57
+say like say 32 examples out of my training data I evaluate the loss in the gradient on
+1:01:02
+this batch of 32 and then I do my parameter update and I keep doing this over and over again and basically what
+1:01:07
+ends up happening is if you only sample very few data points from your training data then your estimate of the gradient
+1:01:13
+of course over the entire training set is kind of noisy because you're only estimating it based on a small subset of
+1:01:19
+your data but it allows you to step more so you can do more steps with approximate gradient or you can do few
+1:01:25
+steps with exact gradient and in practice what ends up working better is if you use mini batch and it's much more
+1:01:32
+efficient of course and it's impractical to actually do full batch gradient descent so common mini batch size is 32
+1:01:38
+64 128 256 this is not usually a hyper parameter we worry about too much you
+1:01:44
+usually set it based on whatever fits on your GPU we're going to be talking about GPUs in a bit but they have finite
+1:01:49
+amount of memory say about like 6 gigabytes or 12 gigabytes if you have a good GPU and you usually choose a batch
+1:01:55
+size such that the small mini batch of examples fits in your memory so that's how usually that's determined it's not a
+1:02:00
+hyper parameter that actually matters a lot in a optimization sense good yeah
+1:02:10
+for sure and we're going to get to momentum in a bit but if you wanted to use momentum then yeah this is just fine
+1:02:16
+we always use mini batch gradient descent with momentum very common to do so just to give you an idea about what
+1:02:22
+this looks like in practice if I'm running optimization over time and I'm looking at the loss evaluated on just a
+1:02:28
+small mini batch of data and you can see that basically my loss goes down over time on these mini batches from the
+1:02:34
+training data so as I'm optimizing I'm going downhill now of course if I was doing full batch gradient descent so
+1:02:41
+this was not just mini batches sample from the data you wouldn't expect as much noise you just expect this to be a line that just goes down but because we
+1:02:48
+use mini batches you get this noise in there because how many batches are better than others but over time they
+1:02:53
+kind of all go down over time is there a question
+1:03:03
+yes so you're wondering about the shape of this loss function you're used to maybe seeing more rapid improvement
+1:03:09
+quicker these loss functions come in different shapes sizes so it really
+1:03:15
+depends it's not necessarily the case that a loss function must look very sharp in the beginning although
+1:03:21
+sometimes they do give different shapes for example it also matters on your initialization if I'm careful with my
+1:03:27
+initialization I would expect less of a jump but if I initialize very
+1:03:33
+incorrectly then you would expect that that's going to be fixed very early on in the optimization we're going to get
+1:03:38
+to some of those parts I think much later I also wanted to show you a plot of the effects of learning rate on your
+1:03:48
+loss function and this learning rate is the step size basically if you have very high learning rates or step sizes you
+1:03:53
+start thrashing around in your W space and so either you don't converge or you explode if you have a very low learning
+1:04:00
+rate then you're barely doing any updates and all so it takes a very long time to actually converge and if you
+1:04:06
+have a high learning rate sometimes you can basically get kind of stuck in a bad position of a loss so these loss
+1:04:13
+functions kind of you need to get down to the minimum so if you have too much energy and you're stepping too quickly then you don't have you don't allow your
+1:04:18
+problem to kind of settle in on the smaller local minima and your objective in general when you talk about neural
+1:04:24
+networks and optimization you'll see a lot of hand waving because that's the only way we communicate about these losses and basin's so just imagine like
+1:04:31
+a big basin of loss and there are these like smaller pockets of smaller loss and so if you're thrashing around and you
+1:04:36
+can't settle in on the smaller lost parts and converge further so that's why the learning rate is no good and so you
+1:04:42
+need to find the correct learning rate which will cause you a lot of headaches and what people do most of the time is sometimes you start off with a high
+1:04:48
+learning rate so you get some benefits and then you decay it over time so you start off with high and then we decay
+1:04:54
+this learning rate over time as we're settling in on the good solution and I
+1:04:59
+also want to point out who I'll go into this in much more detail but the way I'm doing the update here which is how do
+1:05:05
+you use the gradients to actually modify your W that's called an update parameter
+1:05:10
+update there are many different forms doing it this is the simplest way which we refer to as just SGD simplest
+1:05:17
+stochastic gradient descent but there are many formulas such as momentum that was already mentioned in momentum you
+1:05:22
+basically imagine as you're doing this optimization you imagine keeping track of this velocity so as I'm stepping I'm
+1:05:28
+also keeping track of my velocity so if I keep seeing a positive gradient in some direction I will accumulate velocity in that
+1:05:34
+direction so I don't need so I'm going to go faster in that direction and so there are several formulas we'll look at
+1:05:39
+them shortly in the class but at a grad rmsprop atom more commonly used so just to show
+1:05:46
+you effect of different what these look like these different choices and what they might do in your loss function this
+1:05:52
+is a figure from Alec so here we have a loss function and these are the level
+1:05:59
+curves and we start off optimization over there and we're trying to get to the basin and different update formulas
+1:06:06
+will give you better or worse convergence in different problems so you can see for example this momentum in
+1:06:11
+green it built up momentum as it went down and then it overshot and then it kind of go back goes back and this SGD
+1:06:17
+takes forever to converge in red that's what I presented you so far so SGD takes forever to converge and there are
+1:06:23
+different ways of actually performing this parameter update there are more or less efficient in the case of
+1:06:28
+optimization yeah so we'll see much more of this soon I also wanted to mention at
+1:06:35
+this point a slightly shifting gears I wanted to go slightly into I'd explain now basically a linear classification we
+1:06:41
+know how to set up the problem we know there are different loss functions we know how to optimize them so we can kind of do linear classifiers at this point
+1:06:47
+in the class I wanted to mention that I want to give you a sense of what computer vision looked like before commnets came about so that you have a
+1:06:53
+bit of historical perspectives because we used linear classifiers all the time but of course you don't use linear
+1:06:59
+classifiers on the raw original image because that's a pixel you don't want to put linear classifiers on pixels we saw
+1:07:05
+all the problems with it like you have to cover all the modes and so on so what people used to do is they used to
+1:07:10
+compute all these different feature types of images and then you compute different descriptors and different
+1:07:15
+feature types and you get these statistical summaries of what the image looks like what the frequencies are like
+1:07:22
+and so on and then we concatenated all those into large vectors and then we type those into linear classifiers so
+1:07:28
+different feature types all of them concatenate it and then that went into linear classifiers that was usually the
+1:07:33
+pipeline so just to give you an idea of really what these feature types were like one very simple feature type you
+1:07:38
+might imagine is just the color histogram so I go over all the pixels in the image and I bend them and to say how
+1:07:45
+many bins are there for different colors depending on the hue of the color as you can imagine this is kind of like one
+1:07:50
+statistical summary of what's in the image is just a number of colors in each bin so this will become one of my
+1:07:56
+features that I would eventually become captain aiding with many different feature types another kind of and so
+1:08:02
+basically the classifier if you think about it the linear classifier can use these features to actually perform the classification because the linear
+1:08:08
+classifier can like or dislike seeing lots of different colors in the image with positive or negative weights very
+1:08:15
+common features also included things like what we call sift and hawk features basically these where you go in local
+1:08:21
+neighborhoods in the image and you look at whether or not there are lots of edges of different orientations so are
+1:08:27
+there lots of horizontal edges or vertical edges we make up histograms over that and so then you end up with
+1:08:32
+just this summary of what kinds of edges are where in the image and you concatenate all those together there was
+1:08:40
+different lots of different feature types that were proposed over the years just LBP text on lots of different ways
+1:08:47
+of measuring what kinds of things are there in the image and statistics of them and then we had these pipelines
+1:08:54
+called bag-of-words pipelines where you look at different points in your image
+1:08:59
+you describe a little local patch with some scheme that you come up with like looking at the frequencies or looking at
+1:09:05
+the colors or whatever and then we came up with these dictionaries for okay here's the stuff we see in images like
+1:09:12
+there's lots of high frequency stuff or low frequency stuff and blue and so on so you end up with these centroids using
+1:09:18
+k-means of what kind of stuff do we seen images and then we express every single image as statistics over how much of
+1:09:26
+each thing we see in the image so for example this image has lots of high frequency green stuff so you might see
+1:09:32
+some feature vector that basically will have a high value in high frequency and in green and then what we did is we
+1:09:38
+basically took these vectors we concatenated them and put a linear classifier on them so really the
+1:09:44
+context for what we were doing is as follows what it looked like Muslim computer vision before roughly 2012 was that you take your image and
+1:09:51
+you have a step of feature extraction where we decided what are important things to you know compute about an
+1:09:57
+image different frequencies different bins and we decided on what are interesting features and you'd see
+1:10:03
+people take like 10 different feature types in every paper and just concatenate all of it just just dump all of it you end up with one giant feature
+1:10:09
+vector over your image and then you put a linear classifier on top of it just like we saw right now and so you train
+1:10:14
+sale in your SVM on top of all these feature types and what we're replacing it since then we found that what works
+1:10:20
+much better is you start with the raw image and you think of the whole thing you're not designing some part of it in
+1:10:27
+isolation of what you think is a good idea or not we come up with an architecture that can simulate a lot of
+1:10:33
+those different features so to speak and since everything is just a single function we don't just train the top of
+1:10:39
+it on top of the features but we can actually train all the way down to the pixels and we can train our feature
+1:10:44
+extractors effectively so that was the big innovation and how you approach this problem is we try to eliminate a lot of
+1:10:51
+hand engineered components and we're trying to have a single differentiable blob so that we can fully train the full
+1:10:56
+thing starting at the raw pixels so that's where historically this is coming from and what we'll be doing in this
+1:11:02
+class and so next class we'll be looking specifically at this problem of we need
+1:11:07
+to compute the analytic gradients and so we're going to go into back propagation which is an efficient way of computing
+1:11:12
+analytic gradient and so that's backdrop and you're going to become good at it and then we're going to go slightly into
+1:11:19
+neural networks that's it
