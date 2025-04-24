@@ -41,7 +41,7 @@
 ---
 
 ### 5. Types of Embeddings
-
+- **Word Embeddding and Sentence Embedding:** words to nubers and sentences to numbers.
 - **Static Embeddings:** Each word has a single vector (Word2Vec, GloVe).
 - **Contextual Embeddings:** The vector for a word changes depending on its context (ELMo, BERT, GPT). This allows for disambiguation of polysemous words (e.g., "bank" in "river bank" vs "bank account").
 
@@ -94,6 +94,7 @@
 
 ### 11. The Moving Definition of a “Large Language Model”
 
+- **Two Steps:** Language Modelling(Pre-training) and Fine-tuning(Post-training)
 - **LLMs:** Initially referred to models with hundreds of millions of parameters; now, models with tens or hundreds of billions are common.
 - **"Large" is Relative:** As hardware and datasets scale, so does the threshold for what counts as "large."
 - **Key Factors:** Model size, dataset size, and range of capabilities.
